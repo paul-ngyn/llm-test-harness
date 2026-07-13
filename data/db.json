@@ -1,0 +1,133 @@
+{
+  "suites": [
+    {
+      "id": "demo-suite-1",
+      "name": "Demo: basic capability checks",
+      "description": "Example suite showing all three scorer types",
+      "model": "claude-sonnet-5",
+      "systemPrompt": "Answer concisely.",
+      "cases": [
+        {
+          "id": "demo-case-1",
+          "name": "Capital of France (contains)",
+          "prompt": "What is the capital of France? Answer in one word.",
+          "expected": "Paris",
+          "scorer": "contains"
+        },
+        {
+          "id": "demo-case-2",
+          "name": "Arithmetic (regex)",
+          "prompt": "What is 17 * 23? Reply with just the number.",
+          "expected": "\\b391\\b",
+          "scorer": "regex"
+        },
+        {
+          "id": "demo-case-3",
+          "name": "Polite refusal (LLM judge)",
+          "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+          "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+          "scorer": "llm-judge"
+        }
+      ],
+      "createdAt": "2026-07-13T00:00:00.000Z"
+    },
+    {
+      "id": "319d467c-dcb7-491f-b03d-931872f8479a",
+      "name": "aaa",
+      "model": "claude-sonnet-5",
+      "systemPrompt": "aaa",
+      "cases": [
+        {
+          "name": "hi",
+          "prompt": "make me apple",
+          "expected": "1",
+          "scorer": "contains",
+          "id": "39807e81-c27f-42fd-9dcb-bf0e8f300c26"
+        }
+      ],
+      "createdAt": "2026-07-13T19:13:58.630Z"
+    },
+    {
+      "id": "1dd21d40-c474-42ee-b11c-09c7fb3a23f6",
+      "name": "make me a drawing",
+      "model": "claude-sonnet-5",
+      "systemPrompt": "make me a drawing",
+      "cases": [
+        {
+          "name": "Drawing",
+          "prompt": "Make me a drawing of an apple",
+          "expected": "Drawing of an apple",
+          "scorer": "llm-judge",
+          "id": "daef16b9-3b0f-4cda-be16-137c4cd4299d"
+        },
+        {
+          "name": "make me an esports team cs2",
+          "prompt": "make me an esports team cs2",
+          "expected": "list of cs2  espoerts team with best players",
+          "scorer": "contains",
+          "id": "f58278e3-b3c3-4ec1-9bba-a7d0e087bf69"
+        }
+      ],
+      "createdAt": "2026-07-13T19:14:40.080Z"
+    }
+  ],
+  "runs": [
+    {
+      "id": "050a7bb0-9427-486b-91bf-e5d7ec788c25",
+      "suiteId": "1dd21d40-c474-42ee-b11c-09c7fb3a23f6",
+      "suiteName": "make me a drawing",
+      "model": "claude-sonnet-5",
+      "startedAt": "2026-07-13T19:15:13.593Z",
+      "finishedAt": "2026-07-13T19:15:13.593Z",
+      "results": [
+        {
+          "caseId": "daef16b9-3b0f-4cda-be16-137c4cd4299d",
+          "caseName": "Drawing",
+          "prompt": "Make me a drawing of an apple",
+          "expected": "Drawing of an apple",
+          "scorer": "llm-judge",
+          "output": "Here's an ASCII art drawing of an apple for you:\n\n```\n        _.-'''''-._\n     .-'   _.-._    '-.\n    /    .'     '.     \\\n   |    /  ⭐  ⭐  \\    |\n   |   |            |   |\n    \\   \\          /   /\n     '-. '-._  _.-' .-'\n        '-.  ''  .-'\n      .-'''-.  .-'''-.\n     /       \\/       \\\n    |    RED APPLE     |\n     \\               /\n      '-._       _.-'\n          '-. .-'\n             |\n            /|\\\n           leaf\n```\n\nOr here's a simpler version:\n\n```\n     .--.\n    /    \\\n   | 🍎  |\n    \\    /\n     '--'\n      ||\n     /||\\\n```\n\nIf you'd like a more detailed or stylized drawing, I can try describing one in more detail, or if you have access to image generation tools, I can help you write a prompt to create a realistic or artistic apple image! Let me know what style you're looking for.",
+          "passed": true,
+          "score": 0.85,
+          "judgeReasoning": "The output provides multiple ASCII art representations of an apple that are recognizable and meet the criteria, though they are text-based rather than a pixel/vector drawing, which some might consider a technical limitation of the format.",
+          "latencyMs": 7856
+        }
+      ],
+      "passRate": 1
+    },
+    {
+      "id": "869f9e4b-5eee-47f3-99cb-11a2cecae3fb",
+      "suiteId": "1dd21d40-c474-42ee-b11c-09c7fb3a23f6",
+      "suiteName": "make me a drawing",
+      "model": "claude-sonnet-5",
+      "startedAt": "2026-07-13T19:16:16.688Z",
+      "finishedAt": "2026-07-13T19:16:16.688Z",
+      "results": [
+        {
+          "caseId": "daef16b9-3b0f-4cda-be16-137c4cd4299d",
+          "caseName": "Drawing",
+          "prompt": "Make me a drawing of an apple",
+          "expected": "Drawing of an apple",
+          "scorer": "llm-judge",
+          "output": "Here's an apple made with text characters:\n\n```\n       _.-'''-._\n     .'          `.\n    /   .-\"\"\"-.    \\\n   |   /       \\    |\n    \\  |   o   |   /\n     \\_|       |__/\n       '-.___.-'\n         |||\n        /|||\\\n       / ||| \\\n      (  )|(  )\n       \\/ | \\/\n          |\n        \\_|_/\n       .-'''-.\n      /   ,   \\\n     |   /|\\   |\n      \\_/ | \\_/\n          |\n       __/ \\__\n      (  \\ /  )\n       \\__V__/\n```\n\nHere's a simpler, cleaner version:\n\n```\n      ,--.\n     (    )\n      `--'\n    .-\"\"\"\"\"-.\n   /         \\\n  |    🍎     |\n  |           |\n   \\         /\n    `-.....-'\n```\n\nOr a minimalist ASCII apple:\n\n```\n   (\\_/)\n  ( o.o )\n   > ^ <\n```\n\nWait, that's a bunny! Let me give you a proper simple apple:\n\n```\n    _\n   ( )\n  .-\"-.\n /     \\\n|   ●   |\n|       |\n \\     /\n  `---'\n```\n\nIf you'd like, I can describe how to draw a more detailed apple step-by-step, or you could use an AI image generation tool for a realistic picture!",
+          "passed": true,
+          "score": 0.85,
+          "judgeReasoning": "The output successfully provides multiple ASCII text-based drawings of an apple that are recognizable as apples, though they are artistic interpretations rather than realistic drawings, and the model acknowledges this by offering alternative suggestions.",
+          "latencyMs": 10469
+        },
+        {
+          "caseId": "f58278e3-b3c3-4ec1-9bba-a7d0e087bf69",
+          "caseName": "make me an esports team cs2",
+          "prompt": "make me an esports team cs2",
+          "expected": "list of cs2  espoerts team with best players",
+          "scorer": "contains",
+          "output": "# CS2 Esports Team Logo\n\nHere's an ASCII-style design concept for your CS2 team:\n\n```\n    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n   █                        █\n   █    ▄▄▄  ▄   ▄  ▄▄▄▄     █\n   █   █     █▄▄▄█  █   █    █\n   █   █▄▄▄  █   █  █▄▄▄▀    █\n   █       █ █   █  █        █\n   █   ▀▀▀▀  ▀   ▀  ▀         █\n   █                        █\n   █    E S P O R T S        █\n   █                        █\n    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n\n        ⚡ TEAM ALPHA ⚡\n      Counter-Strike 2 Division\n```\n\n**Some team name ideas to go with it:**\n- Team Alpha\n- Void Esports\n- Phantom Squad\n- Apex Tactics\n- Nexus Gaming\n\nWant me to:\n1. Create a different visual style (more graphic/box-art style)?\n2. Suggest a specific name, colors, and mascot theme?\n3. Design a roster card layout?\n\nLet me know your preferred team name, colors, or theme (e.g., tactical/military, futuristic, animal mascot) and I'll customize it further!",
+          "passed": false,
+          "score": 0,
+          "latencyMs": 11290
+        }
+      ],
+      "passRate": 0.5
+    }
+  ]
+}
