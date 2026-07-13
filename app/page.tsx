@@ -2,14 +2,57 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Suite } from "@/lib/types";
+import { MODEL_CATALOG, PROVIDER_LABELS, Provider } from "@/lib/modelCatalog";
+
+interface TemplateSummary {
+  id: string;
+  name: string;
+  description: string;
+  caseCount: number;
+}
+
+const PROVIDERS = Array.from(new Set(MODEL_CATALOG.map((m) => m.provider))) as Provider[];
+
+function ModelSelect({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <select value={value} onChange={(e) => onChange(e.target.value)}>
+      {PROVIDERS.map((provider) => (
+        <optgroup key={provider} label={PROVIDER_LABELS[provider]}>
+          {MODEL_CATALOG.filter((m) => m.provider === provider).map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label}
+            </option>
+          ))}
+        </optgroup>
+      ))}
+    </select>
+  );
+}
 
 export default function Home() {
+  const router = useRouter();
   const [suites, setSuites] = useState<Suite[]>([]);
   const [name, setName] = useState("");
-  const [model, setModel] = useState("claude-sonnet-5");
+  const [model, setModel] = useState(MODEL_CATALOG[0].id);
   const [systemPrompt, setSystemPrompt] = useState("");
   const [busy, setBusy] = useState(false);
+
+  const [templates, setTemplates] = useState<TemplateSummary[]>([]);
+  const [templateModel, setTemplateModel] = useState<Record<string, string>>({});
+  const [importingId, setImportingId] = useState<string | null>(null);
+  const [importError, setImportError] = useState("");
+
+  const [compareSelections, setCompareSelections] = useState<Record<string, string[]>>({});
+  const [comparingId, setComparingId] = useState<string | null>(null);
+  const [compareError, setCompareError] = useState("");
 
   const refresh = () =>
     fetch("/api/suites")
@@ -18,6 +61,9 @@ export default function Home() {
 
   useEffect(() => {
     refresh();
+    fetch("/api/suites/templates")
+      .then((r) => r.json())
+      .then(setTemplates);
   }, []);
 
   async function createSuite(e: React.FormEvent) {
@@ -32,6 +78,54 @@ export default function Home() {
     setSystemPrompt("");
     setBusy(false);
     refresh();
+  }
+
+  async function importTemplate(templateId: string) {
+    setImportingId(templateId);
+    setImportError("");
+    const res = await fetch("/api/suites/templates", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        templateId,
+        model: templateModel[templateId] || MODEL_CATALOG[0].id,
+      }),
+    });
+    const data = await res.json();
+    setImportingId(null);
+    if (!res.ok) {
+      setImportError(data.error ?? "Import failed");
+      return;
+    }
+    router.push(`/suites/${data.id}`);
+  }
+
+  function toggleCompareModel(templateId: string, modelId: string, checked: boolean) {
+    setCompareSelections((prev) => {
+      const current = prev[templateId] ?? [];
+      const next = checked ? [...current, modelId] : current.filter((m) => m !== modelId);
+      return { ...prev, [templateId]: next };
+    });
+  }
+
+  async function compareTemplate(templateId: string) {
+    setComparingId(templateId);
+    setCompareError("");
+    const res = await fetch("/api/compare", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        templateId,
+        models: compareSelections[templateId] ?? [],
+      }),
+    });
+    const data = await res.json();
+    setComparingId(null);
+    if (!res.ok) {
+      setCompareError(data.error ?? "Comparison failed");
+      return;
+    }
+    router.push(`/compare/${data.id}`);
   }
 
   return (
@@ -55,8 +149,77 @@ export default function Home() {
         </div>
       ))}
       {suites.length === 0 && (
-        <p className="muted">No suites yet — create one below.</p>
+        <p className="muted">No suites yet — create one below, or import a premade suite.</p>
       )}
+
+      <h2>Premade suites</h2>
+      <p className="muted">
+        Import a ready-made suite for any model in the catalog — a fast way to
+        smoke-test a new model or provider without writing cases by hand.
+      </p>
+      {importError && <p style={{ color: "var(--red)" }}>{importError}</p>}
+      {compareError && <p style={{ color: "var(--red)" }}>{compareError}</p>}
+      {templates.map((t) => {
+        const selected = compareSelections[t.id] ?? [];
+        return (
+          <div className="card" key={t.id}>
+            <div className="row spread">
+              <div>
+                <strong>{t.name}</strong>
+                <div className="muted">
+                  {t.description} · {t.caseCount} case{t.caseCount === 1 ? "" : "s"}
+                </div>
+              </div>
+              <div className="row">
+                <ModelSelect
+                  value={templateModel[t.id] || MODEL_CATALOG[0].id}
+                  onChange={(v) => setTemplateModel((prev) => ({ ...prev, [t.id]: v }))}
+                />
+                <button
+                  onClick={() => importTemplate(t.id)}
+                  disabled={importingId === t.id}
+                >
+                  {importingId === t.id ? "Importing…" : "Import"}
+                </button>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 12,
+                paddingTop: 12,
+                borderTop: "1px solid var(--border)",
+              }}
+            >
+              <div className="muted" style={{ marginBottom: 6 }}>
+                Run side by side and compare:
+              </div>
+              <div className="check-list">
+                {MODEL_CATALOG.map((m) => (
+                  <label key={m.id}>
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(m.id)}
+                      onChange={(e) => toggleCompareModel(t.id, m.id, e.target.checked)}
+                    />
+                    {m.label}
+                  </label>
+                ))}
+              </div>
+              <button
+                className="secondary"
+                style={{ marginTop: 10 }}
+                onClick={() => compareTemplate(t.id)}
+                disabled={selected.length < 2 || comparingId === t.id}
+              >
+                {comparingId === t.id
+                  ? "Running…"
+                  : `Compare selected (${selected.length})`}
+              </button>
+            </div>
+          </div>
+        );
+      })}
 
       <h2>New suite</h2>
       <form className="panel" onSubmit={createSuite}>
@@ -71,12 +234,7 @@ export default function Home() {
         </label>
         <label>
           Model
-        <select value={model} onChange={(e) => setModel(e.target.value)}>
-        <option value="claude-fable-5">Claude Fable 5</option>
-        <option value="claude-sonnet-5">Claude Sonnet 5</option>
-        <option value="claude-opus-4-8">Claude Opus 4.8</option>
-        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
-        </select>
+          <ModelSelect value={model} onChange={setModel} />
         </label>
         <label>
           System prompt (optional)

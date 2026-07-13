@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Run } from "@/lib/types";
+import { formatTokens } from "@/lib/format";
 
 export default function RunPage() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,14 @@ export default function RunPage() {
           run.results.reduce((sum, r) => sum + r.latencyMs, 0) /
             run.results.length
         );
+  const totalInputTokens = run.results.reduce(
+    (sum, r) => sum + (r.inputTokens ?? 0) + (r.judgeInputTokens ?? 0),
+    0
+  );
+  const totalOutputTokens = run.results.reduce(
+    (sum, r) => sum + (r.outputTokens ?? 0) + (r.judgeOutputTokens ?? 0),
+    0
+  );
 
   return (
     <>
@@ -51,6 +60,12 @@ export default function RunPage() {
           <div className="stat">{avgLatency}ms</div>
           <div className="muted">avg latency</div>
         </div>
+        <div>
+          <div className="stat">
+            {formatTokens(totalInputTokens)} / {formatTokens(totalOutputTokens)}
+          </div>
+          <div className="muted">total tokens (in / out)</div>
+        </div>
       </div>
 
       <table>
@@ -59,6 +74,7 @@ export default function RunPage() {
             <th>Case</th>
             <th>Result</th>
             <th>Output</th>
+            <th>Tokens</th>
             <th>Latency</th>
           </tr>
         </thead>
@@ -88,6 +104,14 @@ export default function RunPage() {
                 {r.judgeReasoning && (
                   <div className="muted" style={{ marginTop: 4 }}>
                     Judge: {r.judgeReasoning}
+                  </div>
+                )}
+              </td>
+              <td>
+                {formatTokens(r.inputTokens)} in / {formatTokens(r.outputTokens)} out
+                {(r.judgeInputTokens != null || r.judgeOutputTokens != null) && (
+                  <div className="muted">
+                    judge: {formatTokens(r.judgeInputTokens)} / {formatTokens(r.judgeOutputTokens)}
                   </div>
                 )}
               </td>

@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { Suite, Run } from "./types";
+import { Suite, Run, Comparison } from "./types";
 
 // Simple JSON-file store. Swap for SQLite/Supabase/Postgres when you outgrow it —
 // everything goes through this module, so it's a one-file change.
@@ -10,13 +10,16 @@ const DB_PATH = path.join(process.cwd(), "data", "db.json");
 interface DB {
   suites: Suite[];
   runs: Run[];
+  comparisons: Comparison[];
 }
 
 async function load(): Promise<DB> {
   try {
-    return JSON.parse(await fs.readFile(DB_PATH, "utf8")) as DB;
+    const db = JSON.parse(await fs.readFile(DB_PATH, "utf8")) as Partial<DB>;
+    // comparisons was added after suites/runs — default it for older db.json files.
+    return { suites: db.suites ?? [], runs: db.runs ?? [], comparisons: db.comparisons ?? [] };
   } catch {
-    return { suites: [], runs: [] };
+    return { suites: [], runs: [], comparisons: [] };
   }
 }
 
@@ -72,4 +75,19 @@ export async function saveRun(run: Run): Promise<Run> {
   else db.runs[i] = run;
   await persist(db);
   return run;
+}
+
+export async function listComparisons(): Promise<Comparison[]> {
+  return (await load()).comparisons;
+}
+
+export async function getComparison(id: string): Promise<Comparison | undefined> {
+  return (await load()).comparisons.find((c) => c.id === id);
+}
+
+export async function saveComparison(comparison: Comparison): Promise<Comparison> {
+  const db = await load();
+  db.comparisons.push(comparison);
+  await persist(db);
+  return comparison;
 }

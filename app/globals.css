@@ -202,3 +202,22 @@ pre.output {
   font-size: 28px;
   font-weight: 700;
 }
+
+.check-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.check-list label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.check-list input[type="checkbox"] {
+  width: auto;
+}

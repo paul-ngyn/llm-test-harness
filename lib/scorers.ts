@@ -6,6 +6,9 @@ export interface ScoreResult {
   /** 0..1 */
   score: number;
   reasoning?: string;
+  /** Token usage for the grading call itself (llm-judge only). */
+  judgeInputTokens?: number;
+  judgeOutputTokens?: number;
 }
 
 export async function score(
@@ -50,12 +53,13 @@ Respond with ONLY a JSON object, no other text:
 async function llmJudge(output: string, criteria: string): Promise<ScoreResult> {
   const judgeModel = process.env.JUDGE_MODEL || "claude-haiku-4-5-20251001";
   const judge = getAdapter(judgeModel);
-  const { text } = await judge.complete(JUDGE_PROMPT(criteria, output));
+  const { text, inputTokens, outputTokens } = await judge.complete(JUDGE_PROMPT(criteria, output));
+  const tokens = { judgeInputTokens: inputTokens, judgeOutputTokens: outputTokens };
 
   // Be forgiving about judge output — models sometimes wrap JSON in prose/fences.
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) {
-    return { passed: false, score: 0, reasoning: `Judge returned unparseable output: ${text.slice(0, 200)}` };
+    return { passed: false, score: 0, reasoning: `Judge returned unparseable output: ${text.slice(0, 200)}`, ...tokens };
   }
   try {
     const parsed = JSON.parse(match[0]) as {
@@ -68,8 +72,9 @@ async function llmJudge(output: string, criteria: string): Promise<ScoreResult> 
       passed: Boolean(parsed.pass),
       score: scoreVal,
       reasoning: parsed.reasoning,
+      ...tokens,
     };
   } catch {
-    return { passed: false, score: 0, reasoning: `Judge returned invalid JSON: ${text.slice(0, 200)}` };
+    return { passed: false, score: 0, reasoning: `Judge returned invalid JSON: ${text.slice(0, 200)}`, ...tokens };
   }
 }

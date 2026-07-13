@@ -18,47 +18,60 @@ Prompt changes are code changes, but most teams ship them without tests. This pr
   - `contains` — case-insensitive substring
   - `regex` — expected is a pattern the output must match
   - `llm-judge` — expected is grading criteria; a judge model returns pass/score/reasoning as JSON
-- **Run history** — pass rate, per-case latency, judge reasoning, and raw outputs for every run
-- **Pluggable model adapters** — Anthropic today; the `ModelAdapter` interface makes OpenAI or a local LM Studio/Ollama endpoint a ~30-line addition
+- **Run history** — pass rate, per-case latency, token usage, judge reasoning, and raw outputs for every run
+- **Multi-provider model adapters** — Anthropic and OpenAI out of the box; the `ModelAdapter` interface + `PROVIDERS` registry makes a new provider (Google, a local LM Studio/Ollama endpoint, etc.) a ~30-line addition
+- **Premade suites** — a library of ready-made test suites (reasoning, coding, instruction-following, summarization, safety/tone) you can import against any model in one click, for quickly smoke-testing a new model or provider
+- **Side-by-side model comparison** — run a premade suite's cases against several models concurrently and see pass rate, latency, token usage, and outputs lined up per case
+- **Token tracking** — input/output token counts per case (plus judge-call tokens for `llm-judge` cases), rolled up per run and per model in a comparison
 
 ## Quickstart
 
 ```bash
 npm install
-cp .env.example .env.local   # add your ANTHROPIC_API_KEY
+cp .env.example .env.local   # add ANTHROPIC_API_KEY and/or OPENAI_API_KEY
 npm run dev
 ```
 
-Open http://localhost:3000. A demo suite with all three scorer types is seeded in `data/db.json` — hit **Run suite** to try it.
+Open http://localhost:3000. A demo suite with all three scorer types is seeded in `data/db.json` — hit **Run suite** to try it, or import one of the **Premade suites** on the home page.
 
 ## Architecture
 
 ```
 app/               Next.js App Router
-  api/suites/      CRUD + POST /api/suites/[id]/run  (executes the suite)
+  api/suites/      CRUD + POST /api/suites/[id]/run       (executes the suite)
+  api/suites/templates/  GET premade suites, POST to import one as a real suite
+  api/compare/     POST to run a template against several models, GET history + by id
   api/runs/        run history + results
   suites/[id]/     suite detail: cases, add/delete, run
-  runs/[id]/       results table: pass/fail, output, latency, judge reasoning
+  runs/[id]/       results table: pass/fail, output, tokens, latency, judge reasoning
+  compare/[id]/    side-by-side results: per-model summary + per-case breakdown
 lib/
-  types.ts         Suite / TestCase / Run / CaseResult
-  models.ts        ModelAdapter interface + AnthropicAdapter
+  types.ts         Suite / TestCase / Run / CaseResult / Comparison / ModelRunResult
+  modelCatalog.ts  client-safe list of selectable models per provider
+  models.ts        ModelAdapter interface, AnthropicAdapter, OpenAIAdapter, provider routing
+  templates.ts     premade SuiteTemplates (reasoning, coding, instruction-following, ...)
   scorers.ts       exact | contains | regex | llm-judge
-  runner.ts        executes a suite, aggregates pass rate, persists the run
+  runner.ts        runs cases against one model (runSuite) or many in parallel (runComparison)
   storage.ts       JSON-file store (swap for SQLite/Supabase in one file)
+  format.ts        small display helpers (e.g. token count formatting)
 data/db.json       storage + seeded demo suite
 ```
 
 Design notes:
 
 - **Everything flows through `storage.ts`** so the JSON file can be replaced with a real database without touching routes or UI.
-- **The judge is just another adapter** — `llm-judge` calls `getAdapter(JUDGE_MODEL)`, so a cheaper model grades outputs (default: Claude Haiku).
+- **Models are addressed as `"<provider>:<model id>"`** (e.g. `openai:gpt-4o`); unprefixed ids default to Anthropic for backward compatibility with suites created before multi-provider support. Add a provider by implementing `ModelAdapter` and registering it in the `PROVIDERS` map in `lib/models.ts`.
+- **The judge is just another adapter** — `llm-judge` calls `getAdapter(JUDGE_MODEL)`, so a cheaper model grades outputs (default: Claude Haiku), and the judge model can come from a different provider than the model under test.
+- **Templates are data, not magic** — importing one just POSTs a normal suite to `storage.ts`; the resulting suite is fully editable like any other.
+- **`runCases` is the shared core** — both `runSuite` (one model) and `runComparison` (N models via `Promise.all`) call the same per-case loop, so scoring and token accounting can't drift between the two paths.
+- **Token counts come straight from each provider's `usage` field** (Anthropic's `input_tokens`/`output_tokens`, OpenAI's `prompt_tokens`/`completion_tokens`) — no estimation. `llm-judge` cases track the judge call's tokens separately from the tested model's, since grading has its own cost.
 - **Runs are synchronous** for simplicity; the run route is the seam where a job queue would go for large suites.
 
 ## Roadmap
 
-- [ ] OpenAI + local (LM Studio/Ollama) adapters, and side-by-side model comparison per suite
+- [ ] Additional providers (Google Gemini, local LM Studio/Ollama)
 - [ ] CLI mode + GitHub Action for prompt regression testing in CI
-- [ ] Cost tracking (token counts per run)
+- [ ] Cost estimates (token counts × per-model pricing) on top of the raw token tracking
 - [ ] Concurrency + retries in the runner
 
 
