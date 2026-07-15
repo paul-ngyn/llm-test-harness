@@ -501,6 +501,542 @@
       ],
       "startedAt": "2026-07-13T19:49:24.568Z",
       "finishedAt": "2026-07-13T19:49:37.219Z"
+    },
+    {
+      "id": "f1fe27a6-3ca3-413a-ab8c-6fdb789b8df3",
+      "name": "Basics: capability smoke test",
+      "systemPrompt": "Answer concisely.",
+      "cases": [
+        {
+          "name": "Capital of France (contains)",
+          "prompt": "What is the capital of France? Answer in one word.",
+          "expected": "Paris",
+          "scorer": "contains",
+          "id": "e6924bf9-a548-4bba-8c70-f00b86776cc2"
+        },
+        {
+          "name": "Arithmetic (regex)",
+          "prompt": "What is 17 * 23? Reply with just the number.",
+          "expected": "\\b391\\b",
+          "scorer": "regex",
+          "id": "e0546835-71d6-4276-8f56-c7a1c8ee6ae1"
+        },
+        {
+          "name": "Polite refusal (LLM judge)",
+          "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+          "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+          "scorer": "llm-judge",
+          "id": "d037a53b-fb2a-433d-8687-d947e02121a4"
+        }
+      ],
+      "models": [
+        "anthropic:claude-fable-5",
+        "openai:gpt-4.1"
+      ],
+      "modelResults": [
+        {
+          "model": "anthropic:claude-fable-5",
+          "results": [
+            {
+              "caseId": "e6924bf9-a548-4bba-8c70-f00b86776cc2",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 4512,
+              "inputTokens": 29,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "e0546835-71d6-4276-8f56-c7a1c8ee6ae1",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 4180,
+              "inputTokens": 31,
+              "outputTokens": 3
+            },
+            {
+              "caseId": "d037a53b-fb2a-433d-8687-d947e02121a4",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize that your order arrived late and appreciate your patience as we work to ensure this doesn't happen again.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with a sincere apologetic tone that directly addresses the late order without making excuses, though the phrase 'as we work to ensure this doesn't happen again' slightly ventures toward forward-looking assurance rather than pure apology.",
+              "latencyMs": 3514,
+              "inputTokens": 36,
+              "outputTokens": 41,
+              "judgeInputTokens": 132,
+              "judgeOutputTokens": 80
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "openai:gpt-4.1",
+          "results": [
+            {
+              "caseId": "e6924bf9-a548-4bba-8c70-f00b86776cc2",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "OpenAI API 429: {\n    \"error\": {\n        \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.\",\n        \"type\": \"insufficient_quota\",\n        \"param\": null,\n        \"code\": \"insufficient_quota\"\n    }\n}\n"
+            },
+            {
+              "caseId": "e0546835-71d6-4276-8f56-c7a1c8ee6ae1",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "OpenAI API 429: {\n    \"error\": {\n        \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.\",\n        \"type\": \"insufficient_quota\",\n        \"param\": null,\n        \"code\": \"insufficient_quota\"\n    }\n}\n"
+            },
+            {
+              "caseId": "d037a53b-fb2a-433d-8687-d947e02121a4",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "OpenAI API 429: {\n    \"error\": {\n        \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.\",\n        \"type\": \"insufficient_quota\",\n        \"param\": null,\n        \"code\": \"insufficient_quota\"\n    }\n}\n"
+            }
+          ],
+          "passRate": 0
+        }
+      ],
+      "startedAt": "2026-07-13T23:02:08.297Z",
+      "finishedAt": "2026-07-13T23:02:21.883Z"
+    },
+    {
+      "id": "4da73ac3-aa84-4d1d-b45a-82401e7cc988",
+      "name": "Basics: capability smoke test",
+      "systemPrompt": "Answer concisely.",
+      "cases": [
+        {
+          "name": "Capital of France (contains)",
+          "prompt": "What is the capital of France? Answer in one word.",
+          "expected": "Paris",
+          "scorer": "contains",
+          "id": "8e991798-5484-484c-9218-fd65f2366754"
+        },
+        {
+          "name": "Arithmetic (regex)",
+          "prompt": "What is 17 * 23? Reply with just the number.",
+          "expected": "\\b391\\b",
+          "scorer": "regex",
+          "id": "bb9d7712-b4d0-466f-aaa2-5104b6cd740b"
+        },
+        {
+          "name": "Polite refusal (LLM judge)",
+          "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+          "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+          "scorer": "llm-judge",
+          "id": "9d7b4093-8cb9-4807-9613-e82e1dd7dbc7"
+        }
+      ],
+      "models": [
+        "anthropic:claude-sonnet-5",
+        "anthropic:claude-fable-5",
+        "anthropic:claude-opus-4-8"
+      ],
+      "modelResults": [
+        {
+          "model": "anthropic:claude-sonnet-5",
+          "results": [
+            {
+              "caseId": "8e991798-5484-484c-9218-fd65f2366754",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1321,
+              "inputTokens": 29,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "bb9d7712-b4d0-466f-aaa2-5104b6cd740b",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1054,
+              "inputTokens": 31,
+              "outputTokens": 3
+            },
+            {
+              "caseId": "9d7b4093-8cb9-4807-9613-e82e1dd7dbc7",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize for the delay in delivering your order and truly appreciate your patience and understanding.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that mentions the late/delayed order, though it could be slightly more direct about not making excuses.",
+              "latencyMs": 1440,
+              "inputTokens": 36,
+              "outputTokens": 35,
+              "judgeInputTokens": 127,
+              "judgeOutputTokens": 58
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-fable-5",
+          "results": [
+            {
+              "caseId": "8e991798-5484-484c-9218-fd65f2366754",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 6288,
+              "inputTokens": 29,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "bb9d7712-b4d0-466f-aaa2-5104b6cd740b",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 5526,
+              "inputTokens": 31,
+              "outputTokens": 3
+            },
+            {
+              "caseId": "9d7b4093-8cb9-4807-9613-e82e1dd7dbc7",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize that your order arrived later than expected and appreciate your patience and understanding.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with a sincere apologetic tone that directly mentions the late order without making excuses, though it could be slightly more concise.",
+              "latencyMs": 4221,
+              "inputTokens": 36,
+              "outputTokens": 33,
+              "judgeInputTokens": 126,
+              "judgeOutputTokens": 59
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-opus-4-8",
+          "results": [
+            {
+              "caseId": "8e991798-5484-484c-9218-fd65f2366754",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1617,
+              "inputTokens": 29,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "bb9d7712-b4d0-466f-aaa2-5104b6cd740b",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1199,
+              "inputTokens": 31,
+              "outputTokens": 3
+            },
+            {
+              "caseId": "9d7b4093-8cb9-4807-9613-e82e1dd7dbc7",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize for the delay in delivering your order and appreciate your patience and understanding.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that directly mentions the late/delayed order without making excuses, meeting all criteria with only minor stylistic considerations.",
+              "latencyMs": 1905,
+              "inputTokens": 36,
+              "outputTokens": 33,
+              "judgeInputTokens": 126,
+              "judgeOutputTokens": 60
+            }
+          ],
+          "passRate": 1
+        }
+      ],
+      "startedAt": "2026-07-15T20:09:10.466Z",
+      "finishedAt": "2026-07-15T20:09:28.458Z"
+    },
+    {
+      "id": "a720dfa3-cf24-49e9-b93c-06335108ec34",
+      "name": "Instruction following & formatting",
+      "cases": [
+        {
+          "name": "Exact word count (LLM judge)",
+          "prompt": "Describe a sunset in exactly five words.",
+          "expected": "The response should contain exactly five words describing a sunset, and nothing else.",
+          "scorer": "llm-judge",
+          "id": "f69eb2e6-43b6-4121-a6f3-4900bb992d55"
+        },
+        {
+          "name": "Bullet list only (regex)",
+          "prompt": "List three colors of the rainbow as a markdown bullet list, nothing else.",
+          "expected": "^\\s*(-|\\*)\\s",
+          "scorer": "regex",
+          "id": "73c6a8af-b608-42ba-bcba-ed2cb15b15a0"
+        },
+        {
+          "name": "No preamble (regex)",
+          "prompt": "What year did the Berlin Wall fall? Reply with just the year, no other words.",
+          "expected": "^\\s*1989\\s*$",
+          "scorer": "regex",
+          "id": "8fc89c53-b215-4973-8ac6-81a61739cbbe"
+        }
+      ],
+      "models": [
+        "anthropic:claude-fable-5",
+        "anthropic:claude-sonnet-5",
+        "anthropic:claude-opus-4-8",
+        "anthropic:claude-haiku-4-5-20251001"
+      ],
+      "modelResults": [
+        {
+          "model": "anthropic:claude-fable-5",
+          "results": [
+            {
+              "caseId": "f69eb2e6-43b6-4121-a6f3-4900bb992d55",
+              "caseName": "Exact word count (LLM judge)",
+              "prompt": "Describe a sunset in exactly five words.",
+              "expected": "The response should contain exactly five words describing a sunset, and nothing else.",
+              "scorer": "llm-judge",
+              "output": "Golden light melts into darkness.",
+              "passed": true,
+              "score": 1,
+              "judgeReasoning": "The output contains exactly five words that effectively describe a sunset and nothing else.",
+              "latencyMs": 6882,
+              "inputTokens": 20,
+              "outputTokens": 20,
+              "judgeInputTokens": 102,
+              "judgeOutputTokens": 41
+            },
+            {
+              "caseId": "73c6a8af-b608-42ba-bcba-ed2cb15b15a0",
+              "caseName": "Bullet list only (regex)",
+              "prompt": "List three colors of the rainbow as a markdown bullet list, nothing else.",
+              "expected": "^\\s*(-|\\*)\\s",
+              "scorer": "regex",
+              "output": "- Red\n- Orange\n- Yellow",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 3715,
+              "inputTokens": 31,
+              "outputTokens": 16
+            },
+            {
+              "caseId": "8fc89c53-b215-4973-8ac6-81a61739cbbe",
+              "caseName": "No preamble (regex)",
+              "prompt": "What year did the Berlin Wall fall? Reply with just the year, no other words.",
+              "expected": "^\\s*1989\\s*$",
+              "scorer": "regex",
+              "output": "1989",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 3825,
+              "inputTokens": 32,
+              "outputTokens": 4
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-sonnet-5",
+          "results": [
+            {
+              "caseId": "f69eb2e6-43b6-4121-a6f3-4900bb992d55",
+              "caseName": "Exact word count (LLM judge)",
+              "prompt": "Describe a sunset in exactly five words.",
+              "expected": "The response should contain exactly five words describing a sunset, and nothing else.",
+              "scorer": "llm-judge",
+              "output": "Golden sky fades into darkness.",
+              "passed": true,
+              "score": 1,
+              "judgeReasoning": "The output contains exactly five words ('Golden', 'sky', 'fades', 'into', 'darkness') that describe a sunset and nothing else.",
+              "latencyMs": 1266,
+              "inputTokens": 20,
+              "outputTokens": 14,
+              "judgeInputTokens": 102,
+              "judgeOutputTokens": 60
+            },
+            {
+              "caseId": "73c6a8af-b608-42ba-bcba-ed2cb15b15a0",
+              "caseName": "Bullet list only (regex)",
+              "prompt": "List three colors of the rainbow as a markdown bullet list, nothing else.",
+              "expected": "^\\s*(-|\\*)\\s",
+              "scorer": "regex",
+              "output": "- Red\n- Orange\n- Yellow",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 2332,
+              "inputTokens": 31,
+              "outputTokens": 16
+            },
+            {
+              "caseId": "8fc89c53-b215-4973-8ac6-81a61739cbbe",
+              "caseName": "No preamble (regex)",
+              "prompt": "What year did the Berlin Wall fall? Reply with just the year, no other words.",
+              "expected": "^\\s*1989\\s*$",
+              "scorer": "regex",
+              "output": "1989",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 2189,
+              "inputTokens": 32,
+              "outputTokens": 4
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-opus-4-8",
+          "results": [
+            {
+              "caseId": "f69eb2e6-43b6-4121-a6f3-4900bb992d55",
+              "caseName": "Exact word count (LLM judge)",
+              "prompt": "Describe a sunset in exactly five words.",
+              "expected": "The response should contain exactly five words describing a sunset, and nothing else.",
+              "scorer": "llm-judge",
+              "output": "Golden light melting into darkness.",
+              "passed": true,
+              "score": 1,
+              "judgeReasoning": "The response contains exactly five words that vividly describe a sunset and nothing else.",
+              "latencyMs": 1536,
+              "inputTokens": 20,
+              "outputTokens": 13,
+              "judgeInputTokens": 102,
+              "judgeOutputTokens": 43
+            },
+            {
+              "caseId": "73c6a8af-b608-42ba-bcba-ed2cb15b15a0",
+              "caseName": "Bullet list only (regex)",
+              "prompt": "List three colors of the rainbow as a markdown bullet list, nothing else.",
+              "expected": "^\\s*(-|\\*)\\s",
+              "scorer": "regex",
+              "output": "- Red\n- Orange\n- Yellow",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1300,
+              "inputTokens": 31,
+              "outputTokens": 16
+            },
+            {
+              "caseId": "8fc89c53-b215-4973-8ac6-81a61739cbbe",
+              "caseName": "No preamble (regex)",
+              "prompt": "What year did the Berlin Wall fall? Reply with just the year, no other words.",
+              "expected": "^\\s*1989\\s*$",
+              "scorer": "regex",
+              "output": "1989",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1146,
+              "inputTokens": 32,
+              "outputTokens": 4
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-haiku-4-5-20251001",
+          "results": [
+            {
+              "caseId": "f69eb2e6-43b6-4121-a6f3-4900bb992d55",
+              "caseName": "Exact word count (LLM judge)",
+              "prompt": "Describe a sunset in exactly five words.",
+              "expected": "The response should contain exactly five words describing a sunset, and nothing else.",
+              "scorer": "llm-judge",
+              "output": "Golden sun melts into darkness.",
+              "passed": true,
+              "score": 1,
+              "judgeReasoning": "The output contains exactly five words that vividly describe a sunset and nothing else.",
+              "latencyMs": 754,
+              "inputTokens": 16,
+              "outputTokens": 10,
+              "judgeInputTokens": 102,
+              "judgeOutputTokens": 43
+            },
+            {
+              "caseId": "73c6a8af-b608-42ba-bcba-ed2cb15b15a0",
+              "caseName": "Bullet list only (regex)",
+              "prompt": "List three colors of the rainbow as a markdown bullet list, nothing else.",
+              "expected": "^\\s*(-|\\*)\\s",
+              "scorer": "regex",
+              "output": "- Red\n- Yellow\n- Blue",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 535,
+              "inputTokens": 22,
+              "outputTokens": 11
+            },
+            {
+              "caseId": "8fc89c53-b215-4973-8ac6-81a61739cbbe",
+              "caseName": "No preamble (regex)",
+              "prompt": "What year did the Berlin Wall fall? Reply with just the year, no other words.",
+              "expected": "^\\s*1989\\s*$",
+              "scorer": "regex",
+              "output": "1989",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 598,
+              "inputTokens": 25,
+              "outputTokens": 6
+            }
+          ],
+          "passRate": 1
+        }
+      ],
+      "startedAt": "2026-07-15T20:09:57.818Z",
+      "finishedAt": "2026-07-15T20:10:13.271Z"
     }
   ]
 }
