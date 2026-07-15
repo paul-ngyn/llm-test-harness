@@ -4,7 +4,7 @@ A lightweight evaluation harness for LLM outputs. Define test suites (prompt + e
 
 Built with Next.js 15 (App Router), TypeScript, and React — no database required to get started.
 
-![Side by Side Run](docs/README_SS_LLM_EVAL_HARNESS.png)
+![Single Model Custom Test Run](docs/readme_pic.png)
 
 ## Why
 
@@ -23,6 +23,8 @@ Prompt changes are code changes, but most teams ship them without tests. This pr
 - **Premade suites** — a library of ready-made test suites (reasoning, coding, instruction-following, summarization, safety/tone) you can import against any model in one click, for quickly smoke-testing a new model or provider
 - **Side-by-side model comparison** — run a premade suite's cases against several models concurrently and see pass rate, latency, token usage, and outputs lined up per case
 - **Token tracking** — input/output token counts per case (plus judge-call tokens for `llm-judge` cases), rolled up per run and per model in a comparison
+
+![Side by Side Run](docs/README_SS_LLM_EVAL_HARNESS.png)
 
 ## Quickstart
 
