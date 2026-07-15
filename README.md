@@ -4,7 +4,7 @@ A lightweight evaluation harness for LLM outputs. Define test suites (prompt + e
 
 Built with Next.js 15 (App Router), TypeScript, and React — no database required to get started.
 
-![Side by Side Run](docs/README_SS_LLM_EVAL_HARNESS)
+![Side by Side Run](docs/README_SS_LLM_EVAL_HARNESS.png)
 
 ## Why
 
