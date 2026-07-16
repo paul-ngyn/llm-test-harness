@@ -19,7 +19,7 @@ Prompt changes are code changes, but most teams ship them without tests. This pr
   - `regex` — expected is a pattern the output must match
   - `llm-judge` — expected is grading criteria; a judge model returns pass/score/reasoning as JSON
 - **Run history** — pass rate, per-case latency, token usage, judge reasoning, and raw outputs for every run
-- **Multi-provider model adapters** — Anthropic, OpenAI, LM Studio (local), and a generic Anthropic-shaped custom endpoint out of the box; the `ModelAdapter` interface + `PROVIDERS` registry makes a new provider (Google, Meta, Ollama, etc.) a ~30-line addition
+- **Multi-provider model adapters** — Anthropic, Google Gemini, OpenAI, LM Studio (local), and a generic Anthropic-shaped custom endpoint out of the box; the `ModelAdapter` interface + `PROVIDERS` registry makes new providers like Meta or Ollama a ~30-line addition
 - **Retry/backoff + per-provider concurrency limiting** — rate-limit (429) and overload (529) responses get exponential backoff with jitter, and `getAdapter` caps concurrent in-flight requests per provider (default 2, `PROVIDER_CONCURRENCY_LIMIT`) so a multi-model comparison plus its `llm-judge` grading calls can't burst the same provider and trigger the very overload errors the retries are covering for
 - **Premade suites** — a library of ready-made test suites (reasoning, coding, instruction-following, summarization, safety/tone) you can import against any model in one click, for quickly smoke-testing a new model or provider
 - **Side-by-side model comparison** — run a premade suite's cases against several models concurrently and see pass rate, latency, token usage, and outputs lined up per case
@@ -31,7 +31,7 @@ Prompt changes are code changes, but most teams ship them without tests. This pr
 
 ```bash
 npm install
-cp .env.example .env.local   # add ANTHROPIC_API_KEY and/or OPENAI_API_KEY
+cp .env.example .env.local   # add ANTHROPIC_API_KEY, GEMINI_API_KEY, and/or OPENAI_API_KEY
 npm run dev
 ```
 
@@ -93,7 +93,7 @@ Design notes:
 
 ## Roadmap
 
-- [ ] Additional providers (Google Gemini, Meta Llama API, Ollama)
+- [ ] Additional providers (Meta Llama API, Ollama)
 - [ ] CLI mode + GitHub Action for prompt regression testing in CI
 - [ ] Cost estimates (token counts × per-model pricing) on top of the raw token tracking
 - [ ] Concurrency within a single suite's case loop (currently sequential; parallelizing would need to stay within the per-provider concurrency limit)

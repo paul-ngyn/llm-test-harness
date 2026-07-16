@@ -1,7 +1,7 @@
 // Client-safe catalog of selectable models. No API keys or fetch calls here —
 // this can be imported from client components. Actual provider logic lives in models.ts.
 
-export type Provider = "anthropic" | "openai" | "lmstudio" | "metaspark";
+export type Provider = "anthropic" | "gemini" | "openai" | "lmstudio" | "metaspark";
 
 export interface ModelInfo {
   /** Canonical id, "<provider>:<model name>". Passed straight to lib/models.ts#getAdapter. */
@@ -12,6 +12,7 @@ export interface ModelInfo {
 
 export const PROVIDER_LABELS: Record<Provider, string> = {
   anthropic: "Anthropic",
+  gemini: "Google Gemini",
   openai: "OpenAI",
   lmstudio: "LM Studio (local)",
   metaspark: "Meta Spark (custom endpoint)",
@@ -30,6 +31,8 @@ export const MODEL_CATALOG: ModelInfo[] = [
   { id: "openai:gpt-4o", label: "GPT-4o", provider: "openai" },
   { id: "openai:gpt-4o-mini", label: "GPT-4o Mini", provider: "openai" },
   { id: "openai:o3-mini", label: "o3-mini", provider: "openai" },
+  { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro", provider: "gemini" },
+  { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", provider: "gemini" },
   { id: "lmstudio:qwen3-4b-toolcalling-codex", label: "Qwen3 4B Toolcalling Codex (LM Studio)", provider: "lmstudio" },
   { id: "metaspark:muse-spark-1.1", label: "Meta Spark 1.1", provider: "metaspark" },
 ];

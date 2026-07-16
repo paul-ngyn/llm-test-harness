@@ -154,6 +154,64 @@ export class OpenAIAdapter implements ModelAdapter {
 }
 
 /**
+ * Gemini's Generative Language API uses JSON over HTTPS with a per-request API
+ * key query param. The request/response shape here mirrors the other provider
+ * adapters: one adapter class, one env var, one registry entry.
+ */
+export class GeminiAdapter implements ModelAdapter {
+  constructor(public id: string) {}
+
+  async complete(prompt: string, system?: string): Promise<Completion> {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY is not set (see .env.example)");
+
+    const baseUrl = "https://generativelanguage.googleapis.com/v1beta";
+    const start = Date.now();
+
+    const body = {
+      ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    };
+
+    let res: Response;
+    try {
+      res = await fetchWithRetry(
+        `${baseUrl}/models/${encodeURIComponent(this.id)}:generateContent?key=${encodeURIComponent(apiKey)}`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+    } catch (err) {
+      throw new Error(`Could not reach Gemini at ${baseUrl} (${(err as Error).message})`);
+    }
+
+    if (!res.ok) {
+      throw new Error(`Gemini API ${res.status}: ${await res.text()}`);
+    }
+
+    const data = (await res.json()) as {
+      candidates?: { content?: { parts?: { text?: string }[] } }[];
+      usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number };
+    };
+    const text = (data.candidates ?? [])
+      .flatMap((candidate) => candidate.content?.parts ?? [])
+      .map((part) => part.text ?? "")
+      .join("");
+
+    return {
+      text,
+      latencyMs: Date.now() - start,
+      inputTokens: data.usageMetadata?.promptTokenCount,
+      outputTokens: data.usageMetadata?.candidatesTokenCount,
+    };
+  }
+}
+
+/**
  * LM Studio's local server speaks the OpenAI chat-completions wire format
  * (see https://lmstudio.ai/docs/local-server), so this is the same request
  * shape as OpenAIAdapter but pointed at a local base URL and with no API key
@@ -278,6 +336,7 @@ type AdapterFactory = (id: string) => ModelAdapter;
  */
 const PROVIDERS: Record<string, AdapterFactory> = {
   anthropic: (id) => new AnthropicAdapter(id),
+  gemini: (id) => new GeminiAdapter(id),
   openai: (id) => new OpenAIAdapter(id),
   lmstudio: (id) => new LMStudioAdapter(id),
   metaspark: (id) => new MetaSparkAdapter(id),

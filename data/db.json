@@ -2793,6 +2793,678 @@
       ],
       "startedAt": "2026-07-16T19:43:43.936Z",
       "finishedAt": "2026-07-16T19:43:56.263Z"
+    },
+    {
+      "id": "5fe1c7fe-8681-4dd1-b2be-e8b01be4e6c2",
+      "name": "Basics: capability smoke test",
+      "systemPrompt": "Answer concisely.",
+      "cases": [
+        {
+          "name": "Capital of France (contains)",
+          "prompt": "What is the capital of France? Answer in one word.",
+          "expected": "Paris",
+          "scorer": "contains",
+          "id": "3bad6420-c20c-4df8-a7b4-9e6fa35f4d45"
+        },
+        {
+          "name": "Arithmetic (regex)",
+          "prompt": "What is 17 * 23? Reply with just the number.",
+          "expected": "\\b391\\b",
+          "scorer": "regex",
+          "id": "8a73a151-377e-4a08-af68-8de5e556c988"
+        },
+        {
+          "name": "Polite refusal (LLM judge)",
+          "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+          "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+          "scorer": "llm-judge",
+          "id": "a303e1e4-e10f-4fbc-a3a3-3ae6afc93e10"
+        }
+      ],
+      "models": [
+        "metaspark:muse-spark-1.1",
+        "anthropic:claude-haiku-4-5-20251001",
+        "anthropic:claude-opus-4-8"
+      ],
+      "modelResults": [
+        {
+          "model": "metaspark:muse-spark-1.1",
+          "results": [
+            {
+              "caseId": "3bad6420-c20c-4df8-a7b4-9e6fa35f4d45",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 2185,
+              "inputTokens": 27,
+              "outputTokens": 240
+            },
+            {
+              "caseId": "8a73a151-377e-4a08-af68-8de5e556c988",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1823,
+              "inputTokens": 29,
+              "outputTokens": 200
+            },
+            {
+              "caseId": "a303e1e4-e10f-4fbc-a3a3-3ae6afc93e10",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize that your order arrived late and appreciate your patience.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that directly mentions the late order without making excuses, though it includes a minor addition about patience that slightly expands the core requirement.",
+              "latencyMs": 7727,
+              "inputTokens": 29,
+              "outputTokens": 652,
+              "judgeInputTokens": 122,
+              "judgeOutputTokens": 64
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-haiku-4-5-20251001",
+          "results": [
+            {
+              "caseId": "3bad6420-c20c-4df8-a7b4-9e6fa35f4d45",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 642,
+              "inputTokens": 24,
+              "outputTokens": 4
+            },
+            {
+              "caseId": "8a73a151-377e-4a08-af68-8de5e556c988",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 7576,
+              "inputTokens": 27,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "a303e1e4-e10f-4fbc-a3a3-3ae6afc93e10",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "I sincerely apologize that your order didn't arrive on time, and I appreciate your patience—we're reviewing what happened to prevent this from occurring again.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that mentions the late order without making excuses, though it subtly hints at investigation which could be interpreted as a mild form of explanation.",
+              "latencyMs": 2097,
+              "inputTokens": 27,
+              "outputTokens": 36,
+              "judgeInputTokens": 139,
+              "judgeOutputTokens": 65
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-opus-4-8",
+          "results": [
+            {
+              "caseId": "3bad6420-c20c-4df8-a7b4-9e6fa35f4d45",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1220,
+              "inputTokens": 29,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "8a73a151-377e-4a08-af68-8de5e556c988",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1223,
+              "inputTokens": 31,
+              "outputTokens": 3
+            },
+            {
+              "caseId": "a303e1e4-e10f-4fbc-a3a3-3ae6afc93e10",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize for the delay in your order arriving, and we truly appreciate your patience and understanding.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that mentions the late order without making excuses, though it includes slightly unnecessary language about appreciation that could be considered borderline excuse-making.",
+              "latencyMs": 1239,
+              "inputTokens": 36,
+              "outputTokens": 37,
+              "judgeInputTokens": 129,
+              "judgeOutputTokens": 65
+            }
+          ],
+          "passRate": 1
+        }
+      ],
+      "startedAt": "2026-07-16T20:57:23.131Z",
+      "finishedAt": "2026-07-16T20:57:36.149Z"
+    },
+    {
+      "id": "d6f20320-c803-4681-aa60-a05bfba368af",
+      "name": "Coding",
+      "systemPrompt": "You are a careful senior software engineer.",
+      "cases": [
+        {
+          "name": "FizzBuzz",
+          "prompt": "Write a Python function fizzbuzz(n) that returns a list of strings per the classic FizzBuzz rules for numbers 1..n.",
+          "expected": "def fizzbuzz",
+          "scorer": "contains",
+          "id": "22552ed3-70e9-45ce-9d37-d6e96c4367d7"
+        },
+        {
+          "name": "Bug fix (LLM judge)",
+          "prompt": "This Python function should return the max of a list but has a bug:\n\ndef max_of(nums):\n    m = 0\n    for n in nums:\n        if n > m: m = n\n    return m\n\nFix it so it works correctly for lists containing only negative numbers, and show the corrected function.",
+          "expected": "The corrected function must handle all-negative lists correctly (e.g. by initializing m to nums[0] instead of 0), and the response should explain what the original bug was.",
+          "scorer": "llm-judge",
+          "id": "3d87642e-7ad2-4729-b1ed-c88b84cbfe29"
+        },
+        {
+          "name": "Valid JSON output (regex)",
+          "prompt": "Output a JSON object with keys \"name\" and \"age\" for a person named Sam who is 30. Reply with ONLY the JSON, no other text.",
+          "expected": "^\\s*\\{[\\s\\S]*\"name\"[\\s\\S]*\"age\"[\\s\\S]*\\}\\s*$",
+          "scorer": "regex",
+          "id": "4980d5b0-01c0-45aa-a1f0-f85720a76931"
+        }
+      ],
+      "models": [
+        "anthropic:claude-sonnet-5",
+        "anthropic:claude-opus-4-8",
+        "anthropic:claude-haiku-4-5-20251001",
+        "gemini:gemini-2.5-pro",
+        "metaspark:muse-spark-1.1"
+      ],
+      "modelResults": [
+        {
+          "model": "anthropic:claude-sonnet-5",
+          "results": [
+            {
+              "caseId": "22552ed3-70e9-45ce-9d37-d6e96c4367d7",
+              "caseName": "FizzBuzz",
+              "prompt": "Write a Python function fizzbuzz(n) that returns a list of strings per the classic FizzBuzz rules for numbers 1..n.",
+              "expected": "def fizzbuzz",
+              "scorer": "contains",
+              "output": "# FizzBuzz Solution\n\n```python\ndef fizzbuzz(n):\n    \"\"\"\n    Returns a list of strings for numbers 1 to n following FizzBuzz rules:\n    - Multiples of 3: \"Fizz\"\n    - Multiples of 5: \"Buzz\"\n    - Multiples of both 3 and 5: \"FizzBuzz\"\n    - Otherwise: the number as a string\n    \n    Args:\n        n: The upper bound (inclusive) of the range to process.\n    \n    Returns:\n        A list of strings representing the FizzBuzz sequence from 1 to n.\n    \n    Raises:\n        ValueError: If n is negative.\n    \"\"\"\n    if n < 0:\n        raise ValueError(\"n must be non-negative\")\n    \n    result = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            result.append(\"FizzBuzz\")\n        elif i % 3 == 0:\n            result.append(\"Fizz\")\n        elif i % 5 == 0:\n            result.append(\"Buzz\")\n        else:\n            result.append(str(i))\n    return result\n```\n\n## Example Usage\n\n```python\n>>> fizzbuzz(15)\n['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']\n\n>>> fizzbuzz(0)\n[]\n\n>>> fizzbuzz(5)\n['1', '2', 'Fizz', '4', 'Buzz']\n```\n\n## Design Notes\n\n- **Check divisibility by 15 first**: Since 15 = 3 × 5, checking `i % 15 == 0` before the individual checks for 3 and 5 avoids redundant conditional logic (no need for nested `and` checks).\n- **Edge case handling**: `n = 0` returns an empty list, and negative values raise a `ValueError` since FizzBuzz is conventionally defined for positive integers.\n- **Return type**: All values are returned as strings (including plain numbers) for consistency, since Fizz/Buzz/FizzBuzz are strings.",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 6450,
+              "inputTokens": 65,
+              "outputTokens": 730
+            },
+            {
+              "caseId": "3d87642e-7ad2-4729-b1ed-c88b84cbfe29",
+              "caseName": "Bug fix (LLM judge)",
+              "prompt": "This Python function should return the max of a list but has a bug:\n\ndef max_of(nums):\n    m = 0\n    for n in nums:\n        if n > m: m = n\n    return m\n\nFix it so it works correctly for lists containing only negative numbers, and show the corrected function.",
+              "expected": "The corrected function must handle all-negative lists correctly (e.g. by initializing m to nums[0] instead of 0), and the response should explain what the original bug was.",
+              "scorer": "llm-judge",
+              "output": "The bug is that `m` starts at `0`, so if all numbers in the list are negative, the function incorrectly returns `0` instead of the actual maximum (which should be the least negative number).\n\n**Fixed version:**\n\n```python\ndef max_of(nums):\n    if not nums:\n        raise ValueError(\"max_of() arg is an empty sequence\")\n    m = nums[0]\n    for n in nums[1:]:\n        if n > m:\n            m = n\n    return m\n```\n\n**Key changes:**\n1. Initialize `m` to `nums[0]` instead of `0`, so the starting point is always a valid element from the list.\n2. Iterate over `nums[1:]` since the first element is already accounted for (this is just a minor optimization; iterating over the full list would still work correctly).\n3. Added a guard clause to raise a clear error on empty input, since `nums[0]` would otherwise raise an `IndexError` with a less helpful message.\n\n**Example:**\n```python\n>>> max_of([-5, -2, -9, -1])\n-1\n```\n\nThis now correctly returns `-1`, whereas the original buggy version would have returned `0`.",
+              "passed": true,
+              "score": 1,
+              "judgeReasoning": "The output correctly identifies the bug (initializing m to 0 instead of nums[0]), provides a properly fixed implementation that handles all-negative lists, explains the key changes, and demonstrates the fix with a concrete example.",
+              "latencyMs": 4787,
+              "inputTokens": 104,
+              "outputTokens": 398,
+              "judgeInputTokens": 403,
+              "judgeOutputTokens": 72
+            },
+            {
+              "caseId": "4980d5b0-01c0-45aa-a1f0-f85720a76931",
+              "caseName": "Valid JSON output (regex)",
+              "prompt": "Output a JSON object with keys \"name\" and \"age\" for a person named Sam who is 30. Reply with ONLY the JSON, no other text.",
+              "expected": "^\\s*\\{[\\s\\S]*\"name\"[\\s\\S]*\"age\"[\\s\\S]*\\}\\s*$",
+              "scorer": "regex",
+              "output": "{\"name\": \"Sam\", \"age\": 30}",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1209,
+              "inputTokens": 65,
+              "outputTokens": 17
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-opus-4-8",
+          "results": [
+            {
+              "caseId": "22552ed3-70e9-45ce-9d37-d6e96c4367d7",
+              "caseName": "FizzBuzz",
+              "prompt": "Write a Python function fizzbuzz(n) that returns a list of strings per the classic FizzBuzz rules for numbers 1..n.",
+              "expected": "def fizzbuzz",
+              "scorer": "contains",
+              "output": "# FizzBuzz\n\nHere's a clean implementation of the classic FizzBuzz:\n\n```python\ndef fizzbuzz(n):\n    \"\"\"\n    Return a list of strings for numbers 1..n per classic FizzBuzz rules.\n\n    For each number i from 1 to n:\n      - \"FizzBuzz\" if i is divisible by both 3 and 5\n      - \"Fizz\"     if i is divisible by 3\n      - \"Buzz\"     if i is divisible by 5\n      - str(i)     otherwise\n\n    Args:\n        n (int): The upper bound (inclusive). If n < 1, returns an empty list.\n\n    Returns:\n        list[str]: The FizzBuzz sequence.\n\n    Raises:\n        TypeError: If n is not an integer.\n    \"\"\"\n    if not isinstance(n, int) or isinstance(n, bool):\n        raise TypeError(f\"n must be an int, got {type(n).__name__}\")\n\n    result = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            result.append(\"FizzBuzz\")\n        elif i % 3 == 0:\n            result.append(\"Fizz\")\n        elif i % 5 == 0:\n            result.append(\"Buzz\")\n        else:\n            result.append(str(i))\n    return result\n```\n\n## Notes on the design choices\n\n- **`i % 15`** is used instead of `i % 3 == 0 and i % 5 == 0` — it's equivalent (15 = lcm(3, 5)) and slightly more concise, though both are fine.\n- **Order matters:** the divisible-by-15 check must come first, otherwise \"Fizz\" or \"Buzz\" would win.\n- **`n < 1`** naturally produces an empty list, since `range(1, n + 1)` is empty.\n- **`isinstance(n, bool)` guard:** in Python `bool` is a subclass of `int`, so `True` would otherwise pass the `int` check. Rejecting it prevents surprising behavior like `fizzbuzz(True)`.\n\n## Quick sanity check\n\n```python\nif __name__ == \"__main__\":\n    print(fizzbuzz(15))\n    # ['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8',\n    #  'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']\n\n    assert fizzbuzz(0) == []\n    assert fizzbuzz(1) == [\"1\"]\n    assert fizzbuzz(5) == [\"1\", \"2\", \"Fizz\", \"4\", \"Buzz\"]\n    print(\"All checks passed.\")\n```",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 10196,
+              "inputTokens": 65,
+              "outputTokens": 867
+            },
+            {
+              "caseId": "3d87642e-7ad2-4729-b1ed-c88b84cbfe29",
+              "caseName": "Bug fix (LLM judge)",
+              "prompt": "This Python function should return the max of a list but has a bug:\n\ndef max_of(nums):\n    m = 0\n    for n in nums:\n        if n > m: m = n\n    return m\n\nFix it so it works correctly for lists containing only negative numbers, and show the corrected function.",
+              "expected": "The corrected function must handle all-negative lists correctly (e.g. by initializing m to nums[0] instead of 0), and the response should explain what the original bug was.",
+              "scorer": "llm-judge",
+              "output": "## The Bug\n\nThe function initializes `m = 0`. This assumes the maximum is at least `0`. For a list of only negative numbers (e.g. `[-3, -1, -7]`), no element is greater than `0`, so the function incorrectly returns `0` instead of `-1`.\n\n## The Fix\n\nInitialize `m` to the **first element** of the list rather than `0`:\n\n```python\ndef max_of(nums):\n    if not nums:\n        raise ValueError(\"max_of() arg is an empty sequence\")\n    m = nums[0]\n    for n in nums[1:]:\n        if n > m:\n            m = n\n    return m\n```\n\n## Why this works\n\n- **Negative-only lists:** `[-3, -1, -7]` now starts with `m = -3`, then correctly updates to `-1`. Returns `-1` ✅\n- **Empty list:** The original would silently return `0` (wrong/meaningless). The fix raises a clear error, matching Python's built-in `max()` behavior.\n\n## Quick verification\n\n```python\nassert max_of([-3, -1, -7]) == -1\nassert max_of([1, 5, 2])    == 5\nassert max_of([-5])         == -5\nassert max_of([0, -1, -2])  == 0\n```\n\nNote: Python's built-in `max()` already does all of this — `max([-3, -1, -7])` returns `-1` — so in real code you'd just use that.",
+              "passed": true,
+              "score": 1,
+              "judgeReasoning": "The response correctly identifies the bug (initializing m to 0 fails for all-negative lists), provides the correct fix (initialize to nums[0]), explains why it works, includes proper empty list handling, and demonstrates verification with test cases.",
+              "latencyMs": 6352,
+              "inputTokens": 104,
+              "outputTokens": 457,
+              "judgeInputTokens": 493,
+              "judgeOutputTokens": 76
+            },
+            {
+              "caseId": "4980d5b0-01c0-45aa-a1f0-f85720a76931",
+              "caseName": "Valid JSON output (regex)",
+              "prompt": "Output a JSON object with keys \"name\" and \"age\" for a person named Sam who is 30. Reply with ONLY the JSON, no other text.",
+              "expected": "^\\s*\\{[\\s\\S]*\"name\"[\\s\\S]*\"age\"[\\s\\S]*\\}\\s*$",
+              "scorer": "regex",
+              "output": "{\"name\": \"Sam\", \"age\": 30}",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1623,
+              "inputTokens": 65,
+              "outputTokens": 17
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-haiku-4-5-20251001",
+          "results": [
+            {
+              "caseId": "22552ed3-70e9-45ce-9d37-d6e96c4367d7",
+              "caseName": "FizzBuzz",
+              "prompt": "Write a Python function fizzbuzz(n) that returns a list of strings per the classic FizzBuzz rules for numbers 1..n.",
+              "expected": "def fizzbuzz",
+              "scorer": "contains",
+              "output": "```python\ndef fizzbuzz(n):\n    \"\"\"\n    Returns a list of strings following the FizzBuzz rules for numbers 1..n.\n    \n    Rules:\n    - For multiples of 3: return 'Fizz'\n    - For multiples of 5: return 'Buzz'\n    - For multiples of both 3 and 5: return 'FizzBuzz'\n    - Otherwise: return the number as a string\n    \n    Args:\n        n: A positive integer representing the upper bound (inclusive)\n    \n    Returns:\n        A list of strings following FizzBuzz rules\n    \n    Examples:\n        >>> fizzbuzz(5)\n        ['1', '2', 'Fizz', '4', 'Buzz']\n        >>> fizzbuzz(15)\n        ['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', \n         '11', 'Fizz', '13', '14', 'FizzBuzz']\n    \"\"\"\n    result = []\n    \n    for i in range(1, n + 1):\n        if i % 15 == 0:  # Divisible by both 3 and 5\n            result.append('FizzBuzz')\n        elif i % 3 == 0:  # Divisible by 3\n            result.append('Fizz')\n        elif i % 5 == 0:  # Divisible by 5\n            result.append('Buzz')\n        else:  # Not divisible by 3 or 5\n            result.append(str(i))\n    \n    return result\n\n\n# Test cases\nif __name__ == '__main__':\n    print(fizzbuzz(5))\n    print(fizzbuzz(15))\n    print(fizzbuzz(1))\n```\n\n**Output:**\n```\n['1', '2', 'Fizz', '4', 'Buzz']\n['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']\n['1']\n```\n\n**Key points:**\n\n1. **Order of checks**: I check for divisibility by 15 first (both 3 and 5), then 3, then 5. This ensures multiples of both get 'FizzBuzz'.\n\n2. **String conversion**: Numbers are converted to strings to maintain a consistent return type (all strings in the list).\n\n3. **Range**: `range(1, n + 1)` iterates from 1 to n inclusive.\n\n4. **Efficiency**: Checking `i % 15 == 0` is more efficient than checking `i % 3 == 0 and i % 5 == 0`.",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 4058,
+              "inputTokens": 46,
+              "outputTokens": 710
+            },
+            {
+              "caseId": "3d87642e-7ad2-4729-b1ed-c88b84cbfe29",
+              "caseName": "Bug fix (LLM judge)",
+              "prompt": "This Python function should return the max of a list but has a bug:\n\ndef max_of(nums):\n    m = 0\n    for n in nums:\n        if n > m: m = n\n    return m\n\nFix it so it works correctly for lists containing only negative numbers, and show the corrected function.",
+              "expected": "The corrected function must handle all-negative lists correctly (e.g. by initializing m to nums[0] instead of 0), and the response should explain what the original bug was.",
+              "scorer": "llm-judge",
+              "output": "# Bug Analysis\n\nThe bug is that `m` is initialized to `0`. This causes incorrect results when all numbers in the list are negative, since no negative number will be greater than 0.\n\nFor example: `max_of([-5, -2, -10])` returns `0` instead of `-2`.\n\n# Corrected Function\n\n```python\ndef max_of(nums):\n    m = nums[0]\n    for n in nums:\n        if n > m: m = n\n    return m\n```\n\n**Key change:** Initialize `m` to `nums[0]` instead of `0`.\n\n## Why this works:\n- Starting with the first element handles all cases (positive, negative, or mixed)\n- The comparison now correctly identifies the maximum value regardless of sign\n\n## Better alternatives:\n\nIf you want a more robust solution:\n\n```python\ndef max_of(nums):\n    if not nums:\n        return None  # or raise ValueError(\"list is empty\")\n    return max(nums)  # Use Python's built-in\n```\n\nOr stick with manual iteration but handle empty lists:\n\n```python\ndef max_of(nums):\n    if not nums:\n        raise ValueError(\"list is empty\")\n    m = nums[0]\n    for n in nums[1:]:\n        if n > m: m = n\n    return m\n```",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response correctly identifies the bug (initializing m to 0), provides the proper fix (initializing to nums[0]), explains why it works, and handles the all-negative case as required; minor deduction only because the alternative solutions, while helpful, slightly dilute focus from the core requirement.",
+              "latencyMs": 2998,
+              "inputTokens": 86,
+              "outputTokens": 311,
+              "judgeInputTokens": 429,
+              "judgeOutputTokens": 88
+            },
+            {
+              "caseId": "4980d5b0-01c0-45aa-a1f0-f85720a76931",
+              "caseName": "Valid JSON output (regex)",
+              "prompt": "Output a JSON object with keys \"name\" and \"age\" for a person named Sam who is 30. Reply with ONLY the JSON, no other text.",
+              "expected": "^\\s*\\{[\\s\\S]*\"name\"[\\s\\S]*\"age\"[\\s\\S]*\\}\\s*$",
+              "scorer": "regex",
+              "output": "```json\n{\n  \"name\": \"Sam\",\n  \"age\": 30\n}\n```",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 695,
+              "inputTokens": 49,
+              "outputTokens": 26
+            }
+          ],
+          "passRate": 0.6666666666666666
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "results": [
+            {
+              "caseId": "22552ed3-70e9-45ce-9d37-d6e96c4367d7",
+              "caseName": "FizzBuzz",
+              "prompt": "Write a Python function fizzbuzz(n) that returns a list of strings per the classic FizzBuzz rules for numbers 1..n.",
+              "expected": "def fizzbuzz",
+              "scorer": "contains",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "Gemini API 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\nPlease retry in 18.248983975s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-pro\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-pro\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"model\": \"gemini-2.5-pro\",\n              \"location\": \"global\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerDay-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-pro\"\n            }\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"18s\"\n      }\n    ]\n  }\n}\n"
+            },
+            {
+              "caseId": "3d87642e-7ad2-4729-b1ed-c88b84cbfe29",
+              "caseName": "Bug fix (LLM judge)",
+              "prompt": "This Python function should return the max of a list but has a bug:\n\ndef max_of(nums):\n    m = 0\n    for n in nums:\n        if n > m: m = n\n    return m\n\nFix it so it works correctly for lists containing only negative numbers, and show the corrected function.",
+              "expected": "The corrected function must handle all-negative lists correctly (e.g. by initializing m to nums[0] instead of 0), and the response should explain what the original bug was.",
+              "scorer": "llm-judge",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "Gemini API 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\nPlease retry in 1.130175135s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-pro\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"model\": \"gemini-2.5-pro\",\n              \"location\": \"global\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-pro\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerDay-FreeTier\",\n            \"quotaDimensions\": {\n              \"model\": \"gemini-2.5-pro\",\n              \"location\": \"global\"\n            }\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"1s\"\n      }\n    ]\n  }\n}\n"
+            },
+            {
+              "caseId": "4980d5b0-01c0-45aa-a1f0-f85720a76931",
+              "caseName": "Valid JSON output (regex)",
+              "prompt": "Output a JSON object with keys \"name\" and \"age\" for a person named Sam who is 30. Reply with ONLY the JSON, no other text.",
+              "expected": "^\\s*\\{[\\s\\S]*\"name\"[\\s\\S]*\"age\"[\\s\\S]*\\}\\s*$",
+              "scorer": "regex",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "Gemini API 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\nPlease retry in 43.900038958s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-pro\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-pro\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\",\n            \"quotaDimensions\": {\n              \"model\": \"gemini-2.5-pro\",\n              \"location\": \"global\"\n            }\n          },\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerDay-FreeTier\",\n            \"quotaDimensions\": {\n              \"model\": \"gemini-2.5-pro\",\n              \"location\": \"global\"\n            }\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"43s\"\n      }\n    ]\n  }\n}\n"
+            }
+          ],
+          "passRate": 0
+        },
+        {
+          "model": "metaspark:muse-spark-1.1",
+          "results": [
+            {
+              "caseId": "22552ed3-70e9-45ce-9d37-d6e96c4367d7",
+              "caseName": "FizzBuzz",
+              "prompt": "Write a Python function fizzbuzz(n) that returns a list of strings per the classic FizzBuzz rules for numbers 1..n.",
+              "expected": "def fizzbuzz",
+              "scorer": "contains",
+              "output": "Here is a clean, standard implementation:\n\n```python\nfrom typing import List\n\ndef fizzbuzz(n: int) -> List[str]:\n    \"\"\"\n    Return FizzBuzz list for 1..n.\n    - divisible by 3 -> \"Fizz\"\n    - divisible by 5 -> \"Buzz\"\n    - divisible by 3 and 5 -> \"FizzBuzz\"\n    - otherwise -> str(number)\n    \"\"\"\n    if n < 1:\n        return []\n    \n    result = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            result.append(\"FizzBuzz\")\n        elif i % 3 == 0:\n            result.append(\"Fizz\")\n        elif i % 5 == 0:\n            result.append(\"Buzz\")\n        else:\n            result.append(str(i))\n    return result\n\n# Example:\n# print(fizzbuzz(15))\n# ['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']\n```",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 5315,
+              "inputTokens": 48,
+              "outputTokens": 749
+            },
+            {
+              "caseId": "3d87642e-7ad2-4729-b1ed-c88b84cbfe29",
+              "caseName": "Bug fix (LLM judge)",
+              "prompt": "This Python function should return the max of a list but has a bug:\n\ndef max_of(nums):\n    m = 0\n    for n in nums:\n        if n > m: m = n\n    return m\n\nFix it so it works correctly for lists containing only negative numbers, and show the corrected function.",
+              "expected": "The corrected function must handle all-negative lists correctly (e.g. by initializing m to nums[0] instead of 0), and the response should explain what the original bug was.",
+              "scorer": "llm-judge",
+              "output": "The bug is `m = 0` - if all numbers are negative, `0` will always be larger.\n\nInitialize `m` to the first element instead:\n\n```python\ndef max_of(nums):\n    if not nums:\n        raise ValueError(\"max_of() arg is an empty list\")\n    \n    m = nums[0]\n    for n in nums[1:]:\n        if n > m:\n            m = n\n    return m\n```\n\nNow `max_of([-5, -2, -10])` correctly returns `-2` instead of `0`.",
+              "passed": true,
+              "score": 1,
+              "judgeReasoning": "The response correctly identifies the bug (initializing m to 0 instead of nums[0]), provides a corrected implementation that handles all-negative lists, and demonstrates the fix with a concrete example.",
+              "latencyMs": 6319,
+              "inputTokens": 84,
+              "outputTokens": 848,
+              "judgeInputTokens": 253,
+              "judgeOutputTokens": 67
+            },
+            {
+              "caseId": "4980d5b0-01c0-45aa-a1f0-f85720a76931",
+              "caseName": "Valid JSON output (regex)",
+              "prompt": "Output a JSON object with keys \"name\" and \"age\" for a person named Sam who is 30. Reply with ONLY the JSON, no other text.",
+              "expected": "^\\s*\\{[\\s\\S]*\"name\"[\\s\\S]*\"age\"[\\s\\S]*\\}\\s*$",
+              "scorer": "regex",
+              "output": "{\"name\": \"Sam\", \"age\": 30}",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 4156,
+              "inputTokens": 52,
+              "outputTokens": 445
+            }
+          ],
+          "passRate": 1
+        }
+      ],
+      "startedAt": "2026-07-16T21:13:25.716Z",
+      "finishedAt": "2026-07-16T21:14:17.265Z"
+    },
+    {
+      "id": "a33e82bd-9373-429d-afc1-2c34e66ca9dd",
+      "name": "Basics: capability smoke test",
+      "systemPrompt": "Answer concisely.",
+      "cases": [
+        {
+          "name": "Capital of France (contains)",
+          "prompt": "What is the capital of France? Answer in one word.",
+          "expected": "Paris",
+          "scorer": "contains",
+          "id": "73fc900c-f600-43c2-8dc4-e0716b1ebec8"
+        },
+        {
+          "name": "Arithmetic (regex)",
+          "prompt": "What is 17 * 23? Reply with just the number.",
+          "expected": "\\b391\\b",
+          "scorer": "regex",
+          "id": "1e33d729-527a-4976-9c56-cfb3fff13c91"
+        },
+        {
+          "name": "Polite refusal (LLM judge)",
+          "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+          "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+          "scorer": "llm-judge",
+          "id": "35e639fa-6508-43b1-a278-d5ecb615754e"
+        }
+      ],
+      "models": [
+        "anthropic:claude-haiku-4-5-20251001",
+        "openai:gpt-4.1",
+        "metaspark:muse-spark-1.1",
+        "gemini:gemini-2.5-flash"
+      ],
+      "modelResults": [
+        {
+          "model": "anthropic:claude-haiku-4-5-20251001",
+          "results": [
+            {
+              "caseId": "73fc900c-f600-43c2-8dc4-e0716b1ebec8",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 895,
+              "inputTokens": 24,
+              "outputTokens": 4
+            },
+            {
+              "caseId": "1e33d729-527a-4976-9c56-cfb3fff13c91",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 643,
+              "inputTokens": 27,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "35e639fa-6508-43b1-a278-d5ecb615754e",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize for the delay in delivering your order and appreciate your patience—we've identified the issue and are taking steps to prevent this from happening again.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that mentions the late order without making excuses, though it slightly edges toward explanation by mentioning identifying the issue.",
+              "latencyMs": 925,
+              "inputTokens": 27,
+              "outputTokens": 37,
+              "judgeInputTokens": 140,
+              "judgeOutputTokens": 60
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "openai:gpt-4.1",
+          "results": [
+            {
+              "caseId": "73fc900c-f600-43c2-8dc4-e0716b1ebec8",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "OpenAI API 429: {\n    \"error\": {\n        \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.\",\n        \"type\": \"insufficient_quota\",\n        \"param\": null,\n        \"code\": \"insufficient_quota\"\n    }\n}\n"
+            },
+            {
+              "caseId": "1e33d729-527a-4976-9c56-cfb3fff13c91",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "OpenAI API 429: {\n    \"error\": {\n        \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.\",\n        \"type\": \"insufficient_quota\",\n        \"param\": null,\n        \"code\": \"insufficient_quota\"\n    }\n}\n"
+            },
+            {
+              "caseId": "35e639fa-6508-43b1-a278-d5ecb615754e",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "OpenAI API 429: {\n    \"error\": {\n        \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.\",\n        \"type\": \"insufficient_quota\",\n        \"param\": null,\n        \"code\": \"insufficient_quota\"\n    }\n}\n"
+            }
+          ],
+          "passRate": 0
+        },
+        {
+          "model": "metaspark:muse-spark-1.1",
+          "results": [
+            {
+              "caseId": "73fc900c-f600-43c2-8dc4-e0716b1ebec8",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 2097,
+              "inputTokens": 27,
+              "outputTokens": 235
+            },
+            {
+              "caseId": "1e33d729-527a-4976-9c56-cfb3fff13c91",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 3058,
+              "inputTokens": 29,
+              "outputTokens": 355
+            },
+            {
+              "caseId": "35e639fa-6508-43b1-a278-d5ecb615754e",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize for your order arriving late and appreciate your patience.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with a sincere apologetic tone that directly mentions the late order without making excuses, though it could be slightly more explicit about taking responsibility.",
+              "latencyMs": 3820,
+              "inputTokens": 29,
+              "outputTokens": 539,
+              "judgeInputTokens": 122,
+              "judgeOutputTokens": 61
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "results": [
+            {
+              "caseId": "73fc900c-f600-43c2-8dc4-e0716b1ebec8",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "Gemini API 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. \",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n"
+            },
+            {
+              "caseId": "1e33d729-527a-4976-9c56-cfb3fff13c91",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "Gemini API 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. \",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n"
+            },
+            {
+              "caseId": "35e639fa-6508-43b1-a278-d5ecb615754e",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 0,
+              "error": "Gemini API 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. \",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n"
+            }
+          ],
+          "passRate": 0
+        }
+      ],
+      "startedAt": "2026-07-16T21:18:15.022Z",
+      "finishedAt": "2026-07-16T21:19:07.120Z"
     }
   ]
 }

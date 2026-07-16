@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { AnthropicAdapter, LMStudioAdapter, parseModelId, getAdapter } from "./models";
+import { AnthropicAdapter, GeminiAdapter, LMStudioAdapter, parseModelId, getAdapter } from "./models";
 
 function fakeResponse(status: number, body: unknown, headers: Record<string, string> = {}): Response {
   return {
@@ -111,6 +111,42 @@ describe("LMStudioAdapter", () => {
     const result = await adapter.complete("What is the capital of France?");
 
     expect(result.text).toBe("Paris");
+  });
+});
+
+describe("GeminiAdapter", () => {
+  const originalFetch = global.fetch;
+  const originalKey = process.env.GEMINI_API_KEY;
+
+  beforeEach(() => {
+    process.env.GEMINI_API_KEY = "test-key";
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    process.env.GEMINI_API_KEY = originalKey;
+  });
+
+  it("parses Gemini response text and token usage", async () => {
+    global.fetch = vi.fn().mockResolvedValue(
+      fakeResponse(200, {
+        candidates: [
+          {
+            content: {
+              parts: [{ text: "Paris" }],
+            },
+          },
+        ],
+        usageMetadata: { promptTokenCount: 11, candidatesTokenCount: 2 },
+      })
+    ) as unknown as typeof fetch;
+
+    const adapter = new GeminiAdapter("gemini-2.5-pro");
+    const result = await adapter.complete("What is the capital of France?");
+
+    expect(result.text).toBe("Paris");
+    expect(result.inputTokens).toBe(11);
+    expect(result.outputTokens).toBe(2);
   });
 });
 
