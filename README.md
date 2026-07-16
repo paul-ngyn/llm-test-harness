@@ -19,7 +19,8 @@ Prompt changes are code changes, but most teams ship them without tests. This pr
   - `regex` — expected is a pattern the output must match
   - `llm-judge` — expected is grading criteria; a judge model returns pass/score/reasoning as JSON
 - **Run history** — pass rate, per-case latency, token usage, judge reasoning, and raw outputs for every run
-- **Multi-provider model adapters** — Anthropic (with retry/backoff on rate-limit and overload errors), OpenAI, and LM Studio (local) out of the box; the `ModelAdapter` interface + `PROVIDERS` registry makes a new provider (Google, Meta, Ollama, etc.) a ~30-line addition
+- **Multi-provider model adapters** — Anthropic, OpenAI, LM Studio (local), and a generic Anthropic-shaped custom endpoint out of the box; the `ModelAdapter` interface + `PROVIDERS` registry makes a new provider (Google, Meta, Ollama, etc.) a ~30-line addition
+- **Retry/backoff + per-provider concurrency limiting** — rate-limit (429) and overload (529) responses get exponential backoff with jitter, and `getAdapter` caps concurrent in-flight requests per provider (default 2, `PROVIDER_CONCURRENCY_LIMIT`) so a multi-model comparison plus its `llm-judge` grading calls can't burst the same provider and trigger the very overload errors the retries are covering for
 - **Premade suites** — a library of ready-made test suites (reasoning, coding, instruction-following, summarization, safety/tone) you can import against any model in one click, for quickly smoke-testing a new model or provider
 - **Side-by-side model comparison** — run a premade suite's cases against several models concurrently and see pass rate, latency, token usage, and outputs lined up per case
 - **Token tracking** — input/output token counts per case (plus judge-call tokens for `llm-judge` cases), rolled up per run and per model in a comparison
@@ -35,6 +36,8 @@ npm run dev
 ```
 
 Open http://localhost:3000. A demo suite with all three scorer types is seeded in `data/db.json` — hit **Run suite** to try it, or import one of the **Premade suites** on the home page.
+
+Run the test suite with `npm test` (vitest) — covers the scorers (`exact`/`contains`/`regex`/`llm-judge` including judge-JSON parsing/fallback), `parseModelId`, the Anthropic retry/backoff behavior, LM Studio's chat-template marker stripping, and the per-provider concurrency limiter.
 
 ### Using LM Studio (local models)
 
@@ -66,9 +69,11 @@ app/               Next.js App Router
 lib/
   types.ts         Suite / TestCase / Run / CaseResult / Comparison / ModelRunResult
   modelCatalog.ts  client-safe list of selectable models per provider
-  models.ts        ModelAdapter interface, AnthropicAdapter, OpenAIAdapter, provider routing
+  models.ts        ModelAdapter interface, adapters, retry/backoff, per-provider concurrency limit, provider routing
+  models.test.ts   parseModelId, retry/backoff, marker stripping, concurrency limit
   templates.ts     premade SuiteTemplates (reasoning, coding, instruction-following, ...)
   scorers.ts       exact | contains | regex | llm-judge
+  scorers.test.ts  scorer correctness + judge JSON parsing/fallback
   runner.ts        runs cases against one model (runSuite) or many in parallel (runComparison)
   storage.ts       JSON-file store (swap for SQLite/Supabase in one file)
   format.ts        small display helpers (e.g. token count formatting)
@@ -84,12 +89,14 @@ Design notes:
 - **`runCases` is the shared core** — both `runSuite` (one model) and `runComparison` (N models via `Promise.all`) call the same per-case loop, so scoring and token accounting can't drift between the two paths.
 - **Token counts come straight from each provider's `usage` field** (Anthropic's `input_tokens`/`output_tokens`, OpenAI's `prompt_tokens`/`completion_tokens`) — no estimation. `llm-judge` cases track the judge call's tokens separately from the tested model's, since grading has its own cost.
 - **Runs are synchronous** for simplicity; the run route is the seam where a job queue would go for large suites.
+- **Reliability lives in `getAdapter`, not the routes**: retry/backoff on transient errors (429/529) and the per-provider concurrency limiter are both applied at the adapter layer, so `runSuite`, `runComparison`, and `llm-judge` grading calls all get them for free without any special-casing.
 
 ## Roadmap
 
 - [ ] Additional providers (Google Gemini, Meta Llama API, Ollama)
 - [ ] CLI mode + GitHub Action for prompt regression testing in CI
 - [ ] Cost estimates (token counts × per-model pricing) on top of the raw token tracking
-- [ ] Concurrency in the runner (retry/backoff on transient errors now handled per-adapter, e.g. `AnthropicAdapter`)
+- [ ] Concurrency within a single suite's case loop (currently sequential; parallelizing would need to stay within the per-provider concurrency limit)
+- [ ] `storage.ts` read-modify-write has no locking — concurrent writes (e.g. two runs finishing at once) can clobber each other; fine for single-user local use, worth a queue or real DB before multi-user
 
 

@@ -421,6 +421,56 @@
         }
       ],
       "passRate": 1
+    },
+    {
+      "id": "328d2c59-1a11-4c53-b762-abe7f268afc3",
+      "suiteId": "9b3dce29-6fbe-4756-a985-9b5799bcd17a",
+      "suiteName": "Reasoning & math",
+      "model": "lmstudio:qwen3-4b-toolcalling-codex",
+      "startedAt": "2026-07-16T19:42:53.748Z",
+      "finishedAt": "2026-07-16T19:42:53.749Z",
+      "results": [
+        {
+          "caseId": "d9610dd6-1b7e-4035-aa02-25e67b6bef19",
+          "caseName": "Average speed word problem",
+          "prompt": "A train travels 60 miles in 1 hour, then 90 miles in 2 hours. What is its average speed in mph for the whole trip? Reply with just the number.",
+          "expected": "\\b50\\b",
+          "scorer": "regex",
+          "output": "[{\"name\": \"average_speed\", \"arguments\": {\"total_distance\": 150, \"total_time\": 3}}]",
+          "passed": false,
+          "score": 0,
+          "latencyMs": 16641,
+          "inputTokens": 58,
+          "outputTokens": 32
+        },
+        {
+          "caseId": "f3399456-3a1f-4bfb-8b3d-11aadf18b590",
+          "caseName": "Transitive logic",
+          "prompt": "Alice is taller than Bob. Bob is taller than Carol. Is Carol taller than Alice? Answer yes or no.",
+          "expected": "no",
+          "scorer": "contains",
+          "output": "[{\"name\": \"relation_inference\", \"arguments\": {\"statement\": \"Alice is taller than Bob. Bob is taller than Carol.\", \"question\": \"Is Carol taller than Alice?\"}}]",
+          "passed": false,
+          "score": 0,
+          "latencyMs": 9402,
+          "inputTokens": 41,
+          "outputTokens": 44
+        },
+        {
+          "caseId": "b5030332-9f58-4d68-baa1-766352dfe524",
+          "caseName": "Proportion",
+          "prompt": "If a recipe needs 3 eggs for 12 cookies, how many eggs are needed for 30 cookies? Reply with just the number.",
+          "expected": "\\b7\\.5\\b",
+          "scorer": "regex",
+          "output": "[{\"name\": \"proportional_proportion\", \"arguments\": {\"original_value\": 3, \"original_unit\": \"eggs\", \"new_value\": 30, \"new_unit\": \"cookies\", \"original_measurement\": \"cookies\"}}]",
+          "passed": false,
+          "score": 0,
+          "latencyMs": 10916,
+          "inputTokens": 48,
+          "outputTokens": 56
+        }
+      ],
+      "passRate": 0
     }
   ],
   "comparisons": [
@@ -2562,6 +2612,187 @@
       ],
       "startedAt": "2026-07-16T19:23:33.406Z",
       "finishedAt": "2026-07-16T19:23:42.451Z"
+    },
+    {
+      "id": "d68059c5-5b5a-4775-a5bd-bcdb03dd0453",
+      "name": "Basics: capability smoke test",
+      "systemPrompt": "Answer concisely.",
+      "cases": [
+        {
+          "name": "Capital of France (contains)",
+          "prompt": "What is the capital of France? Answer in one word.",
+          "expected": "Paris",
+          "scorer": "contains",
+          "id": "9aa97d4d-b2e9-4afa-b144-9bcb4b0fd2ca"
+        },
+        {
+          "name": "Arithmetic (regex)",
+          "prompt": "What is 17 * 23? Reply with just the number.",
+          "expected": "\\b391\\b",
+          "scorer": "regex",
+          "id": "ba28380f-da4a-49be-bc73-68f84951cd2b"
+        },
+        {
+          "name": "Polite refusal (LLM judge)",
+          "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+          "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+          "scorer": "llm-judge",
+          "id": "c8d696e8-99d2-4edb-89af-c9d8d79e6281"
+        }
+      ],
+      "models": [
+        "lmstudio:qwen3-4b-toolcalling-codex",
+        "anthropic:claude-sonnet-5",
+        "anthropic:claude-opus-4-8"
+      ],
+      "modelResults": [
+        {
+          "model": "lmstudio:qwen3-4b-toolcalling-codex",
+          "results": [
+            {
+              "caseId": "9aa97d4d-b2e9-4afa-b144-9bcb4b0fd2ca",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "[{\"name\": \"get_capital\", \"arguments\": {\"country\": \"France\", \"capital_word_only\": true}}]",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 4105,
+              "inputTokens": 46,
+              "outputTokens": 30
+            },
+            {
+              "caseId": "ba28380f-da4a-49be-bc73-68f84951cd2b",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "[{\"name\": \"multiply_numbers\", \"arguments\": {\"num1\": 17, \"num2\": 23}}]",
+              "passed": false,
+              "score": 0,
+              "latencyMs": 3960,
+              "inputTokens": 50,
+              "outputTokens": 32
+            },
+            {
+              "caseId": "c8d696e8-99d2-4edb-89af-c9d8d79e6281",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "[{\"name\": \"generate_apology\", \"arguments\": {\"reason\": \"late delivery\"}}]",
+              "passed": false,
+              "score": 0,
+              "judgeReasoning": "The output is a function call rather than an actual apology sentence, so it fails to meet the requirement of being a single sentence with apologetic tone mentioning the late order.",
+              "latencyMs": 3089,
+              "inputTokens": 48,
+              "outputTokens": 24,
+              "judgeInputTokens": 128,
+              "judgeOutputTokens": 62
+            }
+          ],
+          "passRate": 0
+        },
+        {
+          "model": "anthropic:claude-sonnet-5",
+          "results": [
+            {
+              "caseId": "9aa97d4d-b2e9-4afa-b144-9bcb4b0fd2ca",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "**Paris**",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 3896,
+              "inputTokens": 29,
+              "outputTokens": 7
+            },
+            {
+              "caseId": "ba28380f-da4a-49be-bc73-68f84951cd2b",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 3584,
+              "inputTokens": 31,
+              "outputTokens": 3
+            },
+            {
+              "caseId": "c8d696e8-99d2-4edb-89af-c9d8d79e6281",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We're truly sorry your order arrived later than expected, and we appreciate your patience with us.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that mentions the late order without making excuses, though it subtly shifts focus to patience rather than fully owning the lateness.",
+              "latencyMs": 2618,
+              "inputTokens": 36,
+              "outputTokens": 31,
+              "judgeInputTokens": 125,
+              "judgeOutputTokens": 64
+            }
+          ],
+          "passRate": 1
+        },
+        {
+          "model": "anthropic:claude-opus-4-8",
+          "results": [
+            {
+              "caseId": "9aa97d4d-b2e9-4afa-b144-9bcb4b0fd2ca",
+              "caseName": "Capital of France (contains)",
+              "prompt": "What is the capital of France? Answer in one word.",
+              "expected": "Paris",
+              "scorer": "contains",
+              "output": "Paris",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1573,
+              "inputTokens": 29,
+              "outputTokens": 5
+            },
+            {
+              "caseId": "ba28380f-da4a-49be-bc73-68f84951cd2b",
+              "caseName": "Arithmetic (regex)",
+              "prompt": "What is 17 * 23? Reply with just the number.",
+              "expected": "\\b391\\b",
+              "scorer": "regex",
+              "output": "391",
+              "passed": true,
+              "score": 1,
+              "latencyMs": 1821,
+              "inputTokens": 31,
+              "outputTokens": 3
+            },
+            {
+              "caseId": "c8d696e8-99d2-4edb-89af-c9d8d79e6281",
+              "caseName": "Polite refusal (LLM judge)",
+              "prompt": "Write a one-sentence apology to a customer whose order arrived late.",
+              "expected": "The response should be a single sentence, apologetic in tone, and mention the late order. It should not make excuses.",
+              "scorer": "llm-judge",
+              "output": "We sincerely apologize for the delay in your order arriving and truly appreciate your patience and understanding.",
+              "passed": true,
+              "score": 0.95,
+              "judgeReasoning": "The response is a single sentence with an apologetic tone that directly mentions the late order without making excuses, though it could be slightly more concise.",
+              "latencyMs": 1629,
+              "inputTokens": 36,
+              "outputTokens": 35,
+              "judgeInputTokens": 127,
+              "judgeOutputTokens": 57
+            }
+          ],
+          "passRate": 1
+        }
+      ],
+      "startedAt": "2026-07-16T19:43:43.936Z",
+      "finishedAt": "2026-07-16T19:43:56.263Z"
     }
   ]
 }

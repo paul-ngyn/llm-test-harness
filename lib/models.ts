@@ -15,12 +15,18 @@ export interface ModelAdapter {
 
 /**
  * Local chat-template end-of-turn markers (Gemma's <end_of_turn>, ChatML's
- * <|im_end|>, Llama's <|eot_id|>, etc.) that some local runtimes fail to
- * strip from the sampled text when the wrong stop sequence is configured for
- * the loaded model. Stripped defensively since a leaked marker isn't part of
- * the model's actual answer.
+ * <|im_end|>, Llama 3's <|eot_id|>, GPT-style <|endoftext|>, Llama 2/Mistral's
+ * </s>) that some local runtimes fail to strip from the sampled text when the
+ * wrong stop sequence is configured for the loaded model. Used both as the
+ * request's explicit `stop` sequences and, defensively, to strip any marker
+ * that still leaks into the returned text.
  */
-const CHAT_TEMPLATE_MARKERS = /<end_of_turn>|<\|im_end\|>|<\|eot_id\|>|<\|endoftext\|>|<\/s>/gi;
+const CHAT_TEMPLATE_END_TOKENS = ["<end_of_turn>", "<|im_end|>", "<|eot_id|>", "<|endoftext|>", "</s>"];
+
+const CHAT_TEMPLATE_MARKERS = new RegExp(
+  CHAT_TEMPLATE_END_TOKENS.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+  "gi"
+);
 
 function stripChatTemplateMarkers(text: string): string {
   return text.replace(CHAT_TEMPLATE_MARKERS, "").trimEnd();
@@ -178,7 +184,7 @@ export class LMStudioAdapter implements ModelAdapter {
         body: JSON.stringify({
           model: this.id,
           messages,
-          stop: ["<end_of_turn>", "<|im_end|>", "<|eot_id|>"],
+          stop: CHAT_TEMPLATE_END_TOKENS,
         }),
       });
     } catch (err) {
@@ -225,7 +231,7 @@ export class MetaSparkAdapter implements ModelAdapter {
     const start = Date.now();
     let res: Response;
     try {
-      res = await fetch(`${baseUrl}/v1/messages`, {
+      res = await fetchWithRetry(`${baseUrl}/v1/messages`, {
         method: "POST",
         headers: {
           authorization: `Bearer ${apiKey}`,
@@ -286,6 +292,46 @@ export function parseModelId(model: string): { provider: string; id: string } {
   return { provider: model.slice(0, idx), id: model.slice(idx + 1) };
 }
 
+/**
+ * Limits concurrent in-flight `.complete()` calls per provider. Without this,
+ * a comparison's Promise.all across several models (lib/runner.ts) plus each
+ * case's separate llm-judge grading call (lib/scorers.ts) can burst several
+ * simultaneous requests at the same provider, which measurably raises the
+ * odds of a rate-limit/overload error — this bounds that burst instead of
+ * relying on retries alone to paper over it.
+ */
+class Semaphore {
+  private active = 0;
+  private queue: (() => void)[] = [];
+
+  constructor(private readonly max: number) {}
+
+  async run<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.active >= this.max) {
+      await new Promise<void>((resolve) => this.queue.push(resolve));
+    }
+    this.active++;
+    try {
+      return await fn();
+    } finally {
+      this.active--;
+      this.queue.shift()?.();
+    }
+  }
+}
+
+const PROVIDER_CONCURRENCY_LIMIT = Number(process.env.PROVIDER_CONCURRENCY_LIMIT) || 2;
+const providerSemaphores = new Map<string, Semaphore>();
+
+function semaphoreFor(provider: string): Semaphore {
+  let sem = providerSemaphores.get(provider);
+  if (!sem) {
+    sem = new Semaphore(PROVIDER_CONCURRENCY_LIMIT);
+    providerSemaphores.set(provider, sem);
+  }
+  return sem;
+}
+
 export function getAdapter(model: string): ModelAdapter {
   const { provider, id } = parseModelId(model);
   const make = PROVIDERS[provider];
@@ -294,5 +340,10 @@ export function getAdapter(model: string): ModelAdapter {
       `Unknown model provider "${provider}" (from "${model}"). Known providers: ${Object.keys(PROVIDERS).join(", ")}`
     );
   }
-  return make(id);
+  const adapter = make(id);
+  const semaphore = semaphoreFor(provider);
+  return {
+    id: adapter.id,
+    complete: (prompt, system) => semaphore.run(() => adapter.complete(prompt, system)),
+  };
 }
