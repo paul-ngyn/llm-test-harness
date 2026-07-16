@@ -19,7 +19,7 @@ Prompt changes are code changes, but most teams ship them without tests. This pr
   - `regex` — expected is a pattern the output must match
   - `llm-judge` — expected is grading criteria; a judge model returns pass/score/reasoning as JSON
 - **Run history** — pass rate, per-case latency, token usage, judge reasoning, and raw outputs for every run
-- **Multi-provider model adapters** — Anthropic and OpenAI out of the box; the `ModelAdapter` interface + `PROVIDERS` registry makes a new provider (Google, a local LM Studio/Ollama endpoint, etc.) a ~30-line addition
+- **Multi-provider model adapters** — Anthropic (with retry/backoff on rate-limit and overload errors), OpenAI, and LM Studio (local) out of the box; the `ModelAdapter` interface + `PROVIDERS` registry makes a new provider (Google, Meta, Ollama, etc.) a ~30-line addition
 - **Premade suites** — a library of ready-made test suites (reasoning, coding, instruction-following, summarization, safety/tone) you can import against any model in one click, for quickly smoke-testing a new model or provider
 - **Side-by-side model comparison** — run a premade suite's cases against several models concurrently and see pass rate, latency, token usage, and outputs lined up per case
 - **Token tracking** — input/output token counts per case (plus judge-call tokens for `llm-judge` cases), rolled up per run and per model in a comparison
@@ -35,6 +35,22 @@ npm run dev
 ```
 
 Open http://localhost:3000. A demo suite with all three scorer types is seeded in `data/db.json` — hit **Run suite** to try it, or import one of the **Premade suites** on the home page.
+
+### Using LM Studio (local models)
+
+1. In LM Studio, load a model and open the **Developer** tab, then **Start Server** (default `http://localhost:1234`).
+2. Note the model id shown there (or run `curl http://localhost:1234/v1/models`).
+3. Edit the `lmstudio:local-model` entry in [`lib/modelCatalog.ts`](lib/modelCatalog.ts) so its `id` is `lmstudio:<that model id>` — no API key needed.
+4. If LM Studio isn't on the default port/host, set `LMSTUDIO_BASE_URL` in `.env.local`.
+
+The model then appears in the model dropdown under "LM Studio (local)" and works in single-suite runs and side-by-side comparisons like any other model.
+
+### Using a custom endpoint ("Meta Spark" / provider `metaspark`)
+
+For a self-hosted or third-party endpoint that speaks Anthropic's `/v1/messages` wire format with bearer-token auth:
+
+1. Set `METASPARK_API_KEY` and `METASPARK_BASE_URL` in `.env.local` (defaults to `https://api.meta.ai` if unset — **verify this is actually the host you intend to use**; the harness sends your key and prompts wherever this URL points, so only set it to an endpoint you trust).
+2. Adjust the `metaspark:muse-spark-1.1` entry in [`lib/modelCatalog.ts`](lib/modelCatalog.ts) to match your model's id.
 
 ## Architecture
 
@@ -71,9 +87,9 @@ Design notes:
 
 ## Roadmap
 
-- [ ] Additional providers (Google Gemini, local LM Studio/Ollama)
+- [ ] Additional providers (Google Gemini, Meta Llama API, Ollama)
 - [ ] CLI mode + GitHub Action for prompt regression testing in CI
 - [ ] Cost estimates (token counts × per-model pricing) on top of the raw token tracking
-- [ ] Concurrency + retries in the runner
+- [ ] Concurrency in the runner (retry/backoff on transient errors now handled per-adapter, e.g. `AnthropicAdapter`)
 
 

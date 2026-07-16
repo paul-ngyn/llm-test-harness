@@ -1,7 +1,7 @@
 // Client-safe catalog of selectable models. No API keys or fetch calls here —
 // this can be imported from client components. Actual provider logic lives in models.ts.
 
-export type Provider = "anthropic" | "openai";
+export type Provider = "anthropic" | "openai" | "lmstudio" | "metaspark";
 
 export interface ModelInfo {
   /** Canonical id, "<provider>:<model name>". Passed straight to lib/models.ts#getAdapter. */
@@ -13,9 +13,14 @@ export interface ModelInfo {
 export const PROVIDER_LABELS: Record<Provider, string> = {
   anthropic: "Anthropic",
   openai: "OpenAI",
+  lmstudio: "LM Studio (local)",
+  metaspark: "Meta Spark (custom endpoint)",
 };
 
 // Model names change often — adjust these to whatever's current for your account.
+// LM Studio ids must match the model loaded in its local server (LM Studio's
+// Developer/Local Server tab, or `curl http://localhost:1234/v1/models`) —
+// edit/add entries below to match what you have loaded.
 export const MODEL_CATALOG: ModelInfo[] = [
   { id: "anthropic:claude-fable-5", label: "Claude Fable 5", provider: "anthropic" },
   { id: "anthropic:claude-sonnet-5", label: "Claude Sonnet 5", provider: "anthropic" },
@@ -25,4 +30,6 @@ export const MODEL_CATALOG: ModelInfo[] = [
   { id: "openai:gpt-4o", label: "GPT-4o", provider: "openai" },
   { id: "openai:gpt-4o-mini", label: "GPT-4o Mini", provider: "openai" },
   { id: "openai:o3-mini", label: "o3-mini", provider: "openai" },
+  { id: "lmstudio:qwen3-4b-toolcalling-codex", label: "Qwen3 4B Toolcalling Codex (LM Studio)", provider: "lmstudio" },
+  { id: "metaspark:muse-spark-1.1", label: "Meta Spark 1.1", provider: "metaspark" },
 ];
